@@ -1,36 +1,10 @@
-/* ตั้งค่าฟอนต์ */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    overflow-x: hidden; /* ป้องกันการเลื่อนแนวนอน */
-}
-
-/* การตั้งค่า Sidebar */
-#sidebar-wrapper {
-    min-height: 100vh;
-    width: 250px;
-    transition: margin 0.25s ease-out;
-}
-
-/* ลบเส้นขอบปุ่มเมนู */
-.list-group-item {
-    border: none;
-    padding: 15px 20px;
-    transition: 0.3s;
-}
-
-/* เอฟเฟกต์ตอนเอาเมาส์ชี้เมนู */
-.list-group-item:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    transform: translateX(5px);
-}
-
-/* จัดการมือถือ: ซ่อน Sidebar ถ้าจอมือถือเล็ก (ต้องใช้ JS ปิดเปิดเพิ่ม แต่ทำแบบนี้ไว้ก่อน) */
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
+#sidebar-wrapper { min-height: 100vh; width: 250px; transition: margin 0.25s ease-out; }
+.list-group-item { border: none; padding: 15px 20px; transition: 0.3s; }
+.list-group-item:hover { background-color: rgba(255, 255, 255, 0.1) !important; transform: translateX(5px); }
+.list-group-item.active { background-color: rgba(255, 255, 255, 0.2) !important; border-left: 4px solid #fff; }
 @media (max-width: 768px) {
-    #sidebar-wrapper {
-        width: 70px; /* ย่อให้เหลือแต่ไอคอน */
-    }
-    #sidebar-wrapper .sidebar-heading, 
-    #sidebar-wrapper .list-group-item span {
-        display: none; /* ซ่อนข้อความ */
-    }
+    #sidebar-wrapper { width: 70px; }
+    #sidebar-wrapper .sidebar-heading { font-size: 14px !important; padding: 15px 5px !important; }
+    #sidebar-wrapper .list-group-item span, #sidebar-wrapper .list-group-item text { display: none; }
 }
