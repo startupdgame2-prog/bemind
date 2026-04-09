@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รับเข้าและเบิกจ่าย | ระบบจัดการธุรกิจ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+
+    <div class="d-flex" id="wrapper">
+        <div class="bg-dark text-white" id="sidebar-wrapper">
+            <div class="sidebar-heading text-center py-4 fs-4 fw-bold text-uppercase border-bottom border-secondary">
+                <i class="bi bi-box-seam"></i> POS System
+            </div>
+            <div class="list-group list-group-flush my-3">
+                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="bi bi-speedometer2 me-2"></i> ภาพรวม (Dashboard)
+                </a>
+                <a href="inventory.html" class="list-group-item list-group-item-action bg-transparent text-white active fw-bold">
+                    <i class="bi bi-cart-plus me-2"></i> รับเข้า/เบิกจ่าย
+                </a>
+                <a href="shipping.html" class="list-group-item list-group-item-action bg-transparent text-white">
+                    <i class="bi bi-truck me-2"></i> จัดการขนส่ง
+                </a>
+                <a href="index.html" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold mt-5">
+                    <i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ
+                </a>
+            </div>
+        </div>
+
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <h5 class="m-0 fw-bold text-dark">รับเข้าและเบิกจ่ายสินค้า</h5>
+                </div>
+            </nav>
+
+            <div class="container-fluid px-4 py-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold text-success mb-4"><i class="bi bi-box-arrow-in-down"></i> ฟอร์มรับเข้าสินค้า (IN)</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">เลือกสินค้า</label>
+                                    <select class="form-select"><option>-- เลือกสินค้า --</option><option>เสื้อยืด</option></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">จำนวน (ชิ้น)</label>
+                                    <input type="number" class="form-control" placeholder="0">
+                                </div>
+                                <button class="btn btn-success w-100 fw-bold rounded-pill">บันทึกรับเข้า</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold text-danger mb-4"><i class="bi bi-box-arrow-up"></i> ฟอร์มเบิกจ่าย/ขาย (OUT)</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">เลือกสินค้า</label>
+                                    <select class="form-select"><option>-- เลือกสินค้า --</option><option>เสื้อยืด</option></select>
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label">ช่องทางขาย</label>
+                                        <select class="form-select"><option>Tiktok</option><option>Shopee</option></select>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label">ราคาขาย (฿)</label>
+                                        <input type="number" class="form-control" placeholder="0">
+                                    </div>
+                                </div>
+                                <button class="btn btn-danger w-100 fw-bold rounded-pill">บันทึกขาย</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
