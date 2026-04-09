@@ -33,7 +33,8 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; // 🔴 เปลี่ยนตรงนี้
+        // ใส่ API ของคุณเรียบร้อยแล้ว
+        const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
 
         async function handleLogin(e) {
             e.preventDefault(); 
@@ -46,7 +47,8 @@
 
             try {
                 const response = await fetch(API_URL, {
-                    method: 'POST', headers: { 'Content-Type': 'text/plain' },
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify({ action: "login", username: user, password: pass })
                 });
                 const data = await response.json();

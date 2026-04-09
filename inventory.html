@@ -64,7 +64,9 @@
     </div>
 
     <script>
-        const API_URL = "ใส่_URL_WEB_APP_ของคุณที่นี่"; // 🔴 เปลี่ยนตรงนี้
+        // ใส่ API ของคุณเรียบร้อยแล้ว
+        const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
+        
         let shippingList = [];
 
         window.onload = async function() {
@@ -74,28 +76,33 @@
 
         async function loadData() {
             try {
-                // โหลดสินค้า
-                let resP = await fetch(API_URL, {method: 'POST', body: JSON.stringify({action: "getProducts"})});
+                let resP = await fetch(API_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({action: "getProducts"})
+                });
                 let dataP = await resP.json();
                 let pOpt = '<option value="">-- เลือกสินค้า --</option>';
-                dataP.data.forEach(p => pOpt += `<option value="${p.id}">${p.id} : ${p.name} (เหลือ ${p.balance})</option>`);
+                if(dataP.success) { dataP.data.forEach(p => pOpt += `<option value="${p.id}">${p.id} : ${p.name} (เหลือ ${p.balance})</option>`); }
                 document.getElementById('in-product').innerHTML = pOpt; document.getElementById('out-product').innerHTML = pOpt;
 
-                // โหลดช่องทาง
-                let resC = await fetch(API_URL, {method: 'POST', body: JSON.stringify({action: "getChannels"})});
+                let resC = await fetch(API_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({action: "getChannels"})
+                });
                 let dataC = await resC.json();
                 let cOpt = '<option value="">-- เลือก --</option>';
-                dataC.data.forEach(c => cOpt += `<option value="${c}">${c}</option>`);
+                if(dataC.success) { dataC.data.forEach(c => cOpt += `<option value="${c}">${c}</option>`); }
                 document.getElementById('out-channel').innerHTML = cOpt;
 
-                // โหลดขนส่ง
-                let resS = await fetch(API_URL, {method: 'POST', body: JSON.stringify({action: "getShipping"})});
+                let resS = await fetch(API_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({action: "getShipping"})
+                });
                 let dataS = await resS.json();
-                shippingList = dataS.data;
                 let sOpt = '<option value="">-- เลือก --</option>';
-                dataS.data.forEach(s => sOpt += `<option value="${s.method}">${s.method}</option>`);
+                if(dataS.success) {
+                    shippingList = dataS.data;
+                    dataS.data.forEach(s => sOpt += `<option value="${s.method}">${s.method}</option>`);
+                }
                 document.getElementById('out-shipping').innerHTML = sOpt;
-            } catch(e) { console.error(e); }
+            } catch(e) { console.error("Error loading data:", e); }
         }
 
         function autoFillShipping() {
@@ -124,7 +131,7 @@
 
             try {
                 const response = await fetch(API_URL, {
-                    method: 'POST',
+                    method: 'POST', headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify({
                         action: "saveTransaction", user, type, productId, qty, remark: "", sellingPrice: price, channel, shipMethod, shipCost
                     })

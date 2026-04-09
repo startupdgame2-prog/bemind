@@ -54,13 +54,18 @@
     </div>
 
     <script>
-        const API_URL = "ใส่_URL_WEB_APP_ของคุณที่นี่"; // 🔴 เปลี่ยนตรงนี้
+        // ใส่ API ของคุณเรียบร้อยแล้ว
+        const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
 
         window.onload = async function() {
             if (!localStorage.getItem('inventory_user')) window.location.href = "index.html";
             
             try {
-                let res = await fetch(API_URL, {method:'POST', body:JSON.stringify({action:"getDashboard"})});
+                let res = await fetch(API_URL, {
+                    method:'POST', 
+                    headers: { 'Content-Type': 'text/plain' }, 
+                    body:JSON.stringify({action:"getDashboard"})
+                });
                 let data = await res.json();
                 let html = '';
                 

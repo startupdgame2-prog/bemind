@@ -72,7 +72,8 @@
     </div>
 
     <script>
-        const API_URL = "ใส่_URL_WEB_APP_ของคุณที่นี่"; // 🔴 เปลี่ยนตรงนี้
+        // ใส่ API ของคุณเรียบร้อยแล้ว
+        const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
 
         window.onload = function() {
             if (!localStorage.getItem('inventory_user')) window.location.href = "index.html";
@@ -81,12 +82,14 @@
 
         async function loadProductsForDelete() {
             try {
-                const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "getProducts" }) });
+                const response = await fetch(API_URL, { 
+                    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "getProducts" }) 
+                });
                 const res = await response.json();
                 let opt = '<option value="">-- เลือกสินค้า --</option>';
-                res.data.forEach(p => opt += `<option value="${p.id}">${p.id} : ${p.name}</option>`);
+                if(res.success) { res.data.forEach(p => opt += `<option value="${p.id}">${p.id} : ${p.name}</option>`); }
                 document.getElementById('del-product').innerHTML = opt;
-            } catch (error) {}
+            } catch (error) { console.error(error); }
         }
 
         async function handleAddProduct() {
@@ -96,7 +99,9 @@
 
             if(!id || !name) return alert("กรุณาใส่รหัสและชื่อ");
             try {
-                const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "addProduct", id, name, cat, bal, cost, user }) });
+                const response = await fetch(API_URL, { 
+                    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "addProduct", id, name, cat, bal, cost, user }) 
+                });
                 const res = await response.json();
                 alert(res.message); if(res.success) location.reload();
             } catch (error) { alert("เชื่อมต่อล้มเหลว"); }
@@ -107,7 +112,9 @@
             if(!id) return alert("กรุณาเลือกสินค้า");
             if(!confirm("ยืนยันลบ?")) return;
             try {
-                const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "deleteProduct", id, user }) });
+                const response = await fetch(API_URL, { 
+                    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "deleteProduct", id, user }) 
+                });
                 const res = await response.json();
                 alert(res.message); if(res.success) loadProductsForDelete();
             } catch (error) {}
@@ -117,7 +124,9 @@
             const channel = document.getElementById('new-channel').value, user = localStorage.getItem('inventory_user');
             if(!channel) return alert("พิมพ์ชื่อช่องทาง");
             try {
-                const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "addChannel", channel, user }) });
+                const response = await fetch(API_URL, { 
+                    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "addChannel", channel, user }) 
+                });
                 const res = await response.json();
                 alert(res.message); if(res.success) document.getElementById('new-channel').value = '';
             } catch (error) {}
