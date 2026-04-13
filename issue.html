@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>จุดขายสินค้า | POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        
+        <div id="mobile-overlay" onclick="toggleMenu()"></div>
+
+        <div id="sidebar-wrapper">
+            <div class="sidebar-heading text-center py-4 fs-4 fw-bold border-bottom mb-2">
+                <i class="bi bi-box-seam me-2"></i>Bemind POS
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</a>
+                
+                <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action bg-transparent d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-box-seam me-2"></i> จัดการสต๊อก</span>
+                    <i class="bi bi-chevron-down small"></i>
+                </a>
+                <div class="collapse show" id="inventorySubmenu">
+                    <a href="receive.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0"><i class="bi bi-box-arrow-in-down me-2"></i> รับเข้า (IN)</a>
+                    <a href="issue.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0 active fw-bold"><i class="bi bi-cart3 me-2"></i> จุดขายสินค้า (POS)</a>
+                </div>
+
+                <a href="shipping.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
+                <a href="manage.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-gear me-2"></i> จัดการสินค้า</a>
+                <a href="#" onclick="logout()" class="list-group-item list-group-item-action bg-transparent text-danger mt-4"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
+            </div>
+        </div>
+
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-light bg-white py-3 px-3 shadow-sm mb-4 sticky-top">
+                <div class="d-flex align-items-center w-100">
+                    <button class="btn btn-light d-md-none me-3 rounded-circle" id="menu-toggle" onclick="toggleMenu()">
+                        <i class="bi bi-list fs-4 text-secondary"></i>
+                    </button>
+                    <h5 class="m-0 fw-bold text-secondary">ใบสั่งซื้อใหม่</h5>
+                </div>
+            </nav>
+
+            <div class="container-fluid px-3 px-md-4 pb-5">
+                <div class="row justify-content-center">
+                    <div class="col-xl-9 col-lg-11">
+                        
+                        <div class="card-custom mb-4 p-1">
+                            <div class="card-body">
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-12 col-md-6">
+                                        <label class="fw-bold small text-muted mb-1 ps-1">เลือกสินค้า</label>
+                                        <select id="pos-product" class="form-select form-select-lg border-0 bg-light rounded-4"><option>กำลังโหลด...</option></select>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <label class="fw-bold small text-muted mb-1 ps-1">ราคา/ชิ้น</label>
+                                        <input type="number" id="pos-price" class="form-control form-control-lg border-0 bg-light rounded-4" placeholder="฿">
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <button class="btn btn-pastel-primary btn-lg w-100 fw-bold rounded-4" onclick="addToCart()"><i class="bi bi-plus-lg"></i> เพิ่ม</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-custom overflow-hidden">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table mb-0 align-middle table-borderless">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="ps-4 py-3 rounded-start-4">รายการสินค้า</th>
+                                                <th class="text-center">ราคา</th>
+                                                <th class="text-center">จำนวน</th>
+                                                <th class="text-end pe-4 rounded-end-4">รวม</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cart-body">
+                                            <tr><td colspan="4" class="text-center py-5 text-muted"><i class="bi bi-cart-x fs-1 d-block mb-2 text-black-50"></i>ยังไม่มีสินค้าในตะกร้า</td></tr>
+                                        </tbody>
+                                        
+                                        <tfoot class="border-top" style="background-color: #fafbfc;">
+                                            <tr>
+                                                <td colspan="2" class="ps-3 ps-md-4 pt-4">
+                                                    <div class="row g-2 mb-2">
+                                                        <div class="col-6">
+                                                            <select id="out-channel" class="form-select form-select-sm border-0 shadow-sm rounded-3"><option>ช่องทางขาย</option></select>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <select id="out-promo" class="form-select form-select-sm border-0 shadow-sm rounded-3 text-danger" onchange="updateSummary()"><option value="">ไม่ใช้โปรโมชั่น</option></select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row g-2">
+                                                        <div class="col-6">
+                                                            <select id="out-shipping" class="form-select form-select-sm border-0 shadow-sm rounded-3" onchange="updateSummary()"><option>ขนส่ง</option></select>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <input type="number" id="out-shipping-cost" class="form-control form-control-sm border-0 shadow-sm rounded-3 text-center" onchange="updateSummary()" placeholder="ค่าส่ง ฿0" value="0">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-end pt-4 text-muted small">รวมสินค้า:</td>
+                                                <td class="text-end pe-3 pe-md-4 pt-4 fw-bold" id="sum-subtotal">฿0</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2"></td>
+                                                <td class="text-end text-muted small pb-2" id="sum-discount-text">ส่วนลด / ค่าส่ง:</td>
+                                                <td class="text-end pe-3 pe-md-4 pb-2 fw-bold text-danger">
+                                                    <span id="sum-discount">-฿0</span> / <span id="sum-shipping" class="text-secondary">฿0</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" class="px-3 px-md-4 pb-4">
+                                                    <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded-4 shadow-sm mt-2 border border-light">
+                                                        <span class="fw-bold text-secondary">ยอดรวมชำระสุทธิ</span>
+                                                        <span class="fw-bold fs-3 text-primary" id="sum-net" style="color: #4a7cce !important;">฿0</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="p-3 bg-white border-top text-end rounded-bottom-4">
+                                <button class="btn btn-pastel-success btn-lg w-100 fw-bold rounded-pill" onclick="submitCart()">
+                                    <i class="bi bi-check2-circle me-2"></i> บันทึกใบสั่งซื้อ
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec";
+        let productsList = [], shippingList = [], promoList = [], cart = [];
+
+        // ฟังก์ชันเปิด/ปิดเมนูบนมือถือ
+        function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
+
+        window.onload = async function() { 
+            if (!localStorage.getItem('inventory_user')) window.location.href = "index.html";
+            await loadData(); 
+        };
+
+        // 🟢 ระบบโหลดข้อมูลพร้อมความจำ (Cache) โหลดเร็วทันที
+        async function loadData() {
+            const cachedData = localStorage.getItem('pos_init_data');
+            if (cachedData) {
+                renderDropdowns(JSON.parse(cachedData));
+            }
+
+            try {
+                let res = await fetch(API_URL, {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'text/plain'}, 
+                    body: JSON.stringify({action: "getInitData"})
+                });
+                let json = await res.json();
+                
+                if(json.success) {
+                    localStorage.setItem('pos_init_data', JSON.stringify(json.data));
+                    renderDropdowns(json.data);
+                }
+            } catch(e) { 
+                console.warn("ไม่สามารถอัปเดตข้อมูลได้ ใช้งานโหมด Offline Cache"); 
+            }
+        }
+
+        // ฟังก์ชันช่วยวาด Dropdown
+        function renderDropdowns(data) {
+            productsList = data.products;
+            shippingList = data.shipping;
+            promoList = data.promotions;
+
+            let pOpt = '<option value="">-- เลือกสินค้า --</option>';
+            data.products.forEach(p => pOpt += `<option value="${p.id}">${p.id} : ${p.name} (เหลือ ${p.balance})</option>`);
+            if(document.getElementById('pos-product')) document.getElementById('pos-product').innerHTML = pOpt;
+
+            let cOpt = '<option value="">-- ช่องทาง --</option>';
+            data.channels.forEach(c => cOpt += `<option value="${c}">${c}</option>`);
+            if(document.getElementById('out-channel')) document.getElementById('out-channel').innerHTML = cOpt;
+
+            let sOpt = '<option value="">-- ขนส่ง --</option>';
+            data.shipping.forEach(s => sOpt += `<option value="${s.method}">${s.method}</option>`);
+            if(document.getElementById('out-shipping')) document.getElementById('out-shipping').innerHTML = sOpt;
+
+            let prOpt = '<option value="">-- ไม่ใช้โปรโมชั่น --</option>';
+            data.promotions.forEach(pr => prOpt += `<option value="${pr.id}">${pr.name}</option>`);
+            if(document.getElementById('out-promo')) document.getElementById('out-promo').innerHTML = prOpt;
+        }
+
+        function addToCart() {
+            const pId = document.getElementById('pos-product').value;
+            const price = Number(document.getElementById('pos-price').value);
+            if(!pId || !price) return alert("กรุณาเลือกสินค้าและใส่ราคา");
+
+            const product = productsList.find(p => p.id === pId);
+            const existing = cart.find(item => item.productId === pId && item.price === price);
+            
+            if(existing) { existing.qty += 1; } 
+            else { cart.push({ productId: product.id, name: product.name, price: price, qty: 1, remark: "" }); }
+            
+            document.getElementById('pos-product').value = ''; document.getElementById('pos-price').value = '';
+            updateSummary();
+        }
+
+        function removeCart(index) { cart.splice(index, 1); updateSummary(); }
+        function changeQty(index, amt) { cart[index].qty += amt; if(cart[index].qty <= 0) removeCart(index); else updateSummary(); }
+
+        let finalPromoItems = []; let finalDiscount = 0;
+
+        function updateSummary() {
+            const selectedShip = document.getElementById('out-shipping').value;
+            const shipObj = shippingList.find(s => s.method === selectedShip);
+            if(shipObj) document.getElementById('out-shipping-cost').value = shipObj.cost;
+
+            let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            let shipCost = Number(document.getElementById('out-shipping-cost').value || 0);
+            const promoId = document.getElementById('out-promo').value;
+            
+            finalDiscount = 0; finalPromoItems = [];
+            document.getElementById('sum-discount-text').innerText = "ส่วนลด / ค่าส่ง:";
+
+            if (promoId && cart.length > 0) {
+                const promo = promoList.find(p => p.id === promoId);
+                document.getElementById('sum-discount-text').innerHTML = `<span class="badge bg-danger rounded-pill fw-normal">${promo.name}</span> / ค่าส่ง:`;
+                
+                if (promo.type === 'PERCENT') finalDiscount = subtotal * (promo.value / 100);
+                else if (promo.type === 'AMOUNT') finalDiscount = promo.value > subtotal ? subtotal : promo.value;
+                else if (promo.type === 'B1G1') {
+                    const hasItem = cart.find(i => i.productId === promo.condition);
+                    if (hasItem) {
+                        const freebie = productsList.find(p => p.id === promo.condition);
+                        finalPromoItems.push({ productId: freebie.id, name: freebie.name, price: 0, qty: hasItem.qty, remark: `แถมโปร ${promo.name}` });
+                    }
+                }
+            }
+
+            let netTotal = subtotal - finalDiscount + shipCost;
+
+            let html = '';
+            cart.forEach((item, idx) => {
+                html += `<tr class="border-bottom">
+                    <td class="ps-3 ps-md-4 py-3">
+                        <div class="fw-bold text-dark">${item.name}</div>
+                        <div class="small text-muted d-md-none">฿${item.price} / ชิ้น</div>
+                    </td>
+                    <td class="text-center d-none d-md-table-cell text-secondary">฿${item.price}</td>
+                    <td class="text-center py-3">
+                        <div class="d-inline-flex align-items-center bg-light rounded-pill px-2 py-1 border">
+                            <i class="bi bi-dash-circle text-secondary fs-5 me-2" style="cursor:pointer;" onclick="changeQty(${idx}, -1)"></i>
+                            <span class="fw-bold px-1" style="min-width: 20px;">${item.qty}</span>
+                            <i class="bi bi-plus-circle-fill text-primary fs-5 ms-2" style="cursor:pointer; color:#8aabff !important;" onclick="changeQty(${idx}, 1)"></i>
+                        </div>
+                    </td>
+                    <td class="text-end pe-3 pe-md-4 py-3 fw-bold text-dark">
+                        ฿${item.price * item.qty}
+                        <i class="bi bi-trash3 text-danger ms-2" style="cursor:pointer;" onclick="removeCart(${idx})"></i>
+                    </td>
+                </tr>`;
+            });
+
+            finalPromoItems.forEach(free => {
+                html += `<tr style="background-color: var(--pastel-red); opacity: 0.8;">
+                    <td class="ps-3 ps-md-4 py-2 fw-bold text-danger"><i class="bi bi-gift me-2"></i>${free.name}</td>
+                    <td class="text-center d-none d-md-table-cell">฿0</td>
+                    <td class="text-center py-2 fw-bold text-danger">${free.qty}</td>
+                    <td class="text-end pe-3 pe-md-4 py-2 text-danger fw-bold">แถมฟรี</td>
+                </tr>`;
+            });
+
+            if(cart.length === 0) html = '<tr><td colspan="4" class="text-center py-5 text-muted"><i class="bi bi-cart-x fs-1 d-block mb-2 text-black-50"></i>ยังไม่มีสินค้าในตะกร้า</td></tr>';
+
+            document.getElementById('cart-body').innerHTML = html;
+            document.getElementById('sum-subtotal').innerText = `฿${subtotal.toLocaleString()}`;
+            document.getElementById('sum-discount').innerText = `-฿${finalDiscount.toLocaleString()}`;
+            document.getElementById('sum-shipping').innerText = `฿${shipCost.toLocaleString()}`;
+            document.getElementById('sum-net').innerText = `฿${netTotal.toLocaleString()}`;
+        }
+
+        async function submitCart() {
+            if(cart.length === 0) return alert("ตะกร้าสินค้าว่างเปล่า");
+            const channel = document.getElementById('out-channel').value;
+            const shipMethod = document.getElementById('out-shipping').value;
+            const shipCost = document.getElementById('out-shipping-cost').value;
+            const user = localStorage.getItem('inventory_user') || 'Admin';
+
+            if(!channel || !shipMethod || channel==="ช่องทางขาย" || shipMethod==="ขนส่ง") return alert("เลือกช่องทางและขนส่งให้ครบถ้วน");
+
+            let finalPayloadCart = [];
+            let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            let discountRatio = finalDiscount > 0 ? (subtotal - finalDiscount) / subtotal : 1;
+
+            cart.forEach(item => {
+                finalPayloadCart.push({ productId: item.productId, qty: item.qty, remark: item.remark, price: finalDiscount > 0 ? (item.price * discountRatio) : item.price });
+            });
+            finalPromoItems.forEach(free => finalPayloadCart.push(free));
+
+            const btn = document.querySelector('.btn-pastel-success');
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> กำลังบันทึก...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ action: "saveCartTransaction", user, cart: finalPayloadCart, channel, shipMethod, shipCost, netTotal: (subtotal - finalDiscount + Number(shipCost)) })
+                });
+                const res = await response.json();
+                alert(res.message);
+                if(res.success) {
+                    cart = [];
+                    document.getElementById('out-channel').selectedIndex = 0;
+                    document.getElementById('out-shipping').selectedIndex = 0;
+                    document.getElementById('out-promo').selectedIndex = 0;
+                    document.getElementById('out-shipping-cost').value = 0;
+                    updateSummary();
+                    
+                    // บังคับอัปเดตข้อมูลใหม่หลังจากขายเสร็จ
+                    localStorage.removeItem('pos_init_data');
+                    await loadData();
+                }
+            } catch (error) { alert("เกิดข้อผิดพลาดในการเชื่อมต่อ"); }
+            btn.innerHTML = '<i class="bi bi-check2-circle me-2"></i> บันทึกใบสั่งซื้อ'; btn.disabled = false;
+        }
+
+        function logout() { localStorage.removeItem('inventory_user'); window.location.href = "index.html"; }
+    </script>
+</body>
+</html>

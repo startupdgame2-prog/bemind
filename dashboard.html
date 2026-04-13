@@ -2,56 +2,59 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ภาพรวม | ระบบจัดการธุรกิจ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ภาพรวม | Bemind POS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-light">
+<body>
     <div class="d-flex" id="wrapper">
-        <div class="bg-dark text-white" id="sidebar-wrapper">
-            <div class="sidebar-heading text-center py-4 fs-4 fw-bold text-uppercase border-bottom border-secondary">
-                <i class="bi bi-box-seam"></i> POS System
-            </div>
-            <div class="list-group list-group-flush my-3">
-                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent text-white active fw-bold"><i class="bi bi-speedometer2 me-2"></i> ภาพรวม (Dashboard)</a>
-                <a href="inventory.html" class="list-group-item list-group-item-action bg-transparent text-white"><i class="bi bi-cart-plus me-2"></i> รับเข้า/เบิกจ่าย</a>
-                <a href="shipping.html" class="list-group-item list-group-item-action bg-transparent text-white"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
-                <a href="manage.html" class="list-group-item list-group-item-action bg-transparent text-white"><i class="bi bi-box me-2"></i> จัดการสินค้า</a>
-                <a href="#" onclick="logout()" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold mt-5"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
+        <div id="mobile-overlay" onclick="toggleMenu()"></div>
+        <div id="sidebar-wrapper">
+            <div class="sidebar-heading text-center py-4 fs-4 fw-bold border-bottom mb-2"><i class="bi bi-box-seam me-2"></i>Bemind POS</div>
+            <div class="list-group list-group-flush">
+                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent active"><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</a>
+                <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action bg-transparent d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-box-seam me-2"></i> จัดการสต๊อก</span><i class="bi bi-chevron-down small"></i>
+                </a>
+                <div class="collapse" id="inventorySubmenu">
+                    <a href="receive.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0"><i class="bi bi-box-arrow-in-down me-2"></i> รับเข้า (IN)</a>
+                    <a href="issue.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0"><i class="bi bi-cart3 me-2"></i> จุดขายสินค้า (POS)</a>
+                </div>
+                <a href="shipping.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
+                <a href="manage.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-gear me-2"></i> จัดการสินค้า</a>
+                <a href="#" onclick="logout()" class="list-group-item list-group-item-action bg-transparent text-danger mt-4"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
             </div>
         </div>
 
         <div id="page-content-wrapper" class="w-100">
-            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
-                <h5 class="m-0 fw-bold text-dark">สรุปยอดขายประจำวัน: <span id="user-display" class="text-primary"></span></h5>
+            <nav class="navbar navbar-light bg-white py-3 px-3 shadow-sm mb-4 sticky-top">
+                <div class="d-flex align-items-center w-100">
+                    <button class="btn btn-light d-md-none me-3 rounded-circle" onclick="toggleMenu()"><i class="bi bi-list fs-4 text-secondary"></i></button>
+                    <h5 class="m-0 fw-bold text-secondary">ภาพรวมประจำวัน <span id="user-display" class="text-primary small ms-2"></span></h5>
+                </div>
             </nav>
 
-            <div class="container-fluid px-4 py-4">
+            <div class="container-fluid px-3 px-md-4 pb-5">
                 <div class="row g-3 mb-4">
-                    <div class="col-md-4 col-sm-6">
-                        <div class="card border-0 shadow-sm rounded-4 border-start border-primary border-5">
-                            <div class="card-body">
-                                <p class="text-muted mb-1 small fw-bold">ยอดขายรวมวันนี้</p>
-                                <h3 class="text-primary fw-bold mb-0" id="display-total-sales">กำลังโหลด...</h3>
-                            </div>
+                    <div class="col-md-4">
+                        <div class="card-custom p-4 border-start border-primary border-5">
+                            <p class="text-muted mb-1 small fw-bold">ยอดขายรวมวันนี้</p>
+                            <h3 class="text-primary fw-bold mb-0" id="display-total-sales">กำลังโหลด...</h3>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="card border-0 shadow-sm rounded-4 border-start border-success border-5">
-                            <div class="card-body">
-                                <p class="text-muted mb-1 small fw-bold">กำไรสุทธิ</p>
-                                <h3 class="text-success fw-bold mb-0" id="display-total-profit">กำลังโหลด...</h3>
-                            </div>
+                    <div class="col-md-4">
+                        <div class="card-custom p-4 border-start border-success border-5">
+                            <p class="text-muted mb-1 small fw-bold">กำไรสุทธิ</p>
+                            <h3 class="text-success fw-bold mb-0" id="display-total-profit">กำลังโหลด...</h3>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        <div class="card border-0 shadow-sm rounded-4 border-start border-warning border-5">
-                            <div class="card-body">
-                                <p class="text-muted mb-1 small fw-bold">จำนวนออเดอร์</p>
-                                <h3 class="text-warning fw-bold mb-0" id="display-total-orders">กำลังโหลด...</h3>
-                            </div>
+                    <div class="col-md-4">
+                        <div class="card-custom p-4 border-start border-warning border-5">
+                            <p class="text-muted mb-1 small fw-bold">จำนวนออเดอร์จัดส่ง</p>
+                            <h3 class="text-warning fw-bold mb-0" id="display-total-orders">กำลังโหลด...</h3>
                         </div>
                     </div>
                 </div>
@@ -60,26 +63,22 @@
     </div>
 
     <script>
-        const API_URL = "ใส่_URL_WEB_APP_ของคุณที่นี่"; // 🔴 เปลี่ยนตรงนี้
+        const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
+        function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
 
         window.onload = async function() {
             const currentUser = localStorage.getItem('inventory_user');
             if (!currentUser) { window.location.href = "index.html"; return; }
-            document.getElementById('user-display').innerText = currentUser;
+            document.getElementById('user-display').innerText = `(${currentUser})`;
 
             try {
-                const response = await fetch(API_URL, {
-                    method: 'POST', headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ action: "getDashboard" })
-                });
+                const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "getDashboard" }) });
                 const data = await response.json();
-
                 document.getElementById('display-total-sales').innerText = "฿" + (data.todaySales || 0).toLocaleString();
                 document.getElementById('display-total-profit').innerText = "฿" + (data.todayProfit || 0).toLocaleString();
                 document.getElementById('display-total-orders').innerText = (data.totalShipOrders || 0) + " กล่อง";
-            } catch (error) { console.error("Error:", error); }
+            } catch (error) { console.error(error); }
         }
-
         function logout() { localStorage.removeItem('inventory_user'); window.location.href = "index.html"; }
     </script>
 </body>
