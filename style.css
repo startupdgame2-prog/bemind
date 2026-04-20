@@ -1,107 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
-
-:root {
-    /* โทนสีพาสเทล สบายตา */
-    --bg-color: #f4f7f8;
-    --surface-color: #ffffff;
-    --primary-color: #7ba4e3;      /* ฟ้าพาสเทล */
-    --primary-light: #e8f0fe;
-    --success-color: #88c9a1;      /* เขียวมินต์ */
-    --success-light: #eaf6ef;
-    --danger-color: #f28b82;       /* แดงพาสเทล */
-    --warning-color: #fcd47b;      /* เหลืองพาสเทล */
-    --text-main: #4a4a4a;
-    --text-muted: #9e9e9e;
-    --sidebar-bg: #ffffff;
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    overflow-x: hidden; 
 }
-
-body {
-    font-family: 'Prompt', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-main);
-    overflow-x: hidden;
+#sidebar-wrapper { 
+    min-height: 100vh; 
+    width: 250px; 
+    transition: margin 0.25s ease-out; 
 }
-
-/* โครงสร้างหลัก */
-#wrapper { display: flex; width: 100%; align-items: stretch; }
-
-/* 🎨 เมนูด้านซ้าย (Sidebar) */
-#sidebar-wrapper {
-    min-height: 100vh;
-    width: 260px;
-    background-color: var(--sidebar-bg);
-    border-right: 1px solid #ebedf0;
-    transition: all 0.3s ease;
-    z-index: 1000;
-    box-shadow: 4px 0 15px rgba(0,0,0,0.02);
-}
-
-.sidebar-heading { 
-    color: var(--primary-color); 
-    letter-spacing: 0.5px; 
-}
-
-.list-group-item {
+.list-group-item { 
     border: none; 
-    padding: 12px 20px; 
-    margin: 4px 16px; 
-    border-radius: 12px; 
-    color: var(--text-main); 
+    padding: 15px 20px; 
     transition: 0.3s; 
-    background: transparent; 
-    font-weight: 500;
 }
-
 .list-group-item:hover { 
-    background-color: #f0f4f8; 
-    color: var(--primary-color); 
-    transform: translateX(4px); 
+    background-color: rgba(255, 255, 255, 0.1) !important; 
+    transform: translateX(5px); 
 }
-
 .list-group-item.active { 
-    background-color: var(--primary-light) !important; 
-    color: var(--primary-color) !important; 
-    font-weight: 700; 
+    background-color: rgba(255, 255, 255, 0.2) !important; 
+    border-left: 4px solid #fff; 
 }
-
-/* 🎨 การ์ดและตาราง */
-.card-custom {
-    background: var(--surface-color); 
-    border-radius: 20px; 
-    box-shadow: 0 8px 24px rgba(0,0,0,0.04); 
-    border: 1px solid rgba(0,0,0,0.02);
-}
-
-.table { color: var(--text-main); }
-.table-light { background-color: #f8fafb; }
-.table th { border-bottom: 2px solid #ebedf0; color: var(--text-muted); font-weight: 600; }
-
-/* 🎨 ฟอร์มและปุ่ม (Inputs & Buttons) */
-.form-control, .form-select {
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    padding: 10px 15px;
-    background-color: #fcfcfc;
-}
-.form-control:focus, .form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.25rem rgba(123, 164, 227, 0.2);
-    background-color: #fff;
-}
-
-.btn-pastel-primary { background-color: var(--primary-color); color: #fff; border: none; border-radius: 12px;}
-.btn-pastel-primary:hover { background-color: #638ecb; color: #fff; }
-
-.btn-pastel-success { background-color: var(--success-color); color: #fff; border: none; border-radius: 12px;}
-.btn-pastel-success:hover { background-color: #71b38b; color: #fff; }
-
-/* 📱 สำหรับมือถือ */
-#wrapper.toggled #sidebar-wrapper { margin-left: -260px; }
-#mobile-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 999; backdrop-filter: blur(2px); }
-
 @media (max-width: 768px) {
-    #sidebar-wrapper { margin-left: -260px; position: fixed; height: 100%; box-shadow: 5px 0 15px rgba(0,0,0,0.05); }
-    #wrapper.toggled #sidebar-wrapper { margin-left: 0; }
-    #wrapper.toggled #mobile-overlay { display: block; }
-    .card-body { padding: 1.25rem !important; }
+    #sidebar-wrapper { width: 70px; }
+    #sidebar-wrapper .sidebar-heading { font-size: 14px !important; padding: 15px 5px !important; }
+    #sidebar-wrapper .list-group-item span, #sidebar-wrapper .list-group-item text { display: none; }
 }
