@@ -19,28 +19,28 @@
                 <i class="bi bi-box-seam me-2"></i>Bemind POS
             </div>
             <div class="list-group list-group-flush">
-                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</a>
+                <a href="dashboard.html" class="list-group-item list-group-item-action"><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</a>
                 
-                <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action bg-transparent d-flex justify-content-between align-items-center">
+                <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                     <span><i class="bi bi-box-seam me-2"></i> จัดการสต๊อก</span>
                     <i class="bi bi-chevron-down small"></i>
                 </a>
                 <div class="collapse show" id="inventorySubmenu">
-                    <a href="receive.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0 active fw-bold"><i class="bi bi-box-arrow-in-down me-2"></i> รับเข้า (IN)</a>
-                    <a href="issue.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0"><i class="bi bi-cart3 me-2"></i> จุดขายสินค้า (POS)</a>
+                    <a href="receive.html" class="list-group-item list-group-item-action ps-5 active fw-bold"><i class="bi bi-box-arrow-in-down me-2"></i> รับเข้า (IN)</a>
+                    <a href="issue.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-cart3 me-2"></i> จุดขายสินค้า (POS)</a>
                 </div>
 
-                <a href="shipping.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
-                <a href="manage.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-gear me-2"></i> จัดการสินค้า</a>
-                <a href="#" onclick="logout()" class="list-group-item list-group-item-action bg-transparent text-danger mt-4"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
+                <a href="shipping.html" class="list-group-item list-group-item-action"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
+                <a href="manage.html" class="list-group-item list-group-item-action"><i class="bi bi-gear me-2"></i> จัดการสินค้า</a>
+                <a href="#" onclick="logout()" class="list-group-item list-group-item-action text-danger mt-4"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
             </div>
         </div>
 
         <div id="page-content-wrapper" class="w-100">
-            <nav class="navbar navbar-light bg-white py-3 px-3 shadow-sm mb-4 sticky-top">
+            <nav class="navbar navbar-light py-3 px-4 mb-4 border-bottom bg-white sticky-top">
                 <div class="d-flex align-items-center w-100">
-                    <button class="btn btn-light d-md-none me-3 rounded-circle" id="menu-toggle" onclick="toggleMenu()">
-                        <i class="bi bi-list fs-4 text-secondary"></i>
+                    <button class="btn btn-light d-md-none me-3 rounded-circle border-0" id="menu-toggle" onclick="toggleMenu()">
+                        <i class="bi bi-list fs-4"></i>
                     </button>
                     <h5 class="m-0 fw-bold text-secondary">รับเข้าสต๊อกสินค้า</h5>
                 </div>
@@ -49,19 +49,24 @@
             <div class="container-fluid px-3 px-md-4 pb-5">
                 <div class="row justify-content-center">
                     <div class="col-md-8 col-lg-6">
-                        <div class="card-custom p-4 p-md-5 mt-3">
+                        <div class="card-custom p-4 p-md-5 mt-3 shadow-sm border-0">
                             <h4 class="fw-bold text-success mb-4 text-center"><i class="bi bi-box-arrow-in-down me-2"></i>ฟอร์มรับเข้าสต๊อก (IN)</h4>
                             
-                            <div class="mb-4">
+                            <div class="mb-3">
                                 <label class="form-label fw-bold small text-muted ps-1">เลือกสินค้าที่ต้องการรับเข้า</label>
                                 <select id="in-product" class="form-select form-select-lg bg-light border-0 rounded-4">
-                                    <option>กำลังโหลดข้อมูล...</option>
+                                    <option value="">กำลังโหลดข้อมูล...</option>
                                 </select>
                             </div>
                             
-                            <div class="mb-5">
+                            <div class="mb-3">
                                 <label class="form-label fw-bold small text-muted ps-1">จำนวนที่รับเข้า (ชิ้น)</label>
                                 <input type="number" id="in-qty" class="form-control form-control-lg bg-light border-0 rounded-4" placeholder="ระบุตัวเลข">
+                            </div>
+
+                            <div class="mb-5">
+                                <label class="form-label fw-bold small text-muted ps-1">หมายเหตุ (ถ้ามี)</label>
+                                <input type="text" id="in-remark" class="form-control form-control-lg bg-light border-0 rounded-4" placeholder="เช่น รับจากร้าน A, ลอตมีตำหนิ">
                             </div>
                             
                             <button class="btn btn-pastel-success btn-lg w-100 fw-bold rounded-pill shadow-sm" onclick="submitTransaction()">
@@ -84,7 +89,6 @@
             await loadData();
         }
 
-        // โหลดข้อมูลด้วยระบบ Cache เพื่อความรวดเร็ว
         async function loadData() {
             const cachedData = localStorage.getItem('pos_init_data');
             if (cachedData) {
@@ -106,16 +110,26 @@
             } catch(e) { console.warn("โหลดข้อมูลออฟไลน์"); }
         }
 
+        // 🟢 แก้ไขไม่ให้เคลียร์ค่าที่เลือกไว้ตอนวาด Dropdown ใหม่
         function renderProductDropdown(products) {
+            const productSelect = document.getElementById('in-product');
+            const currentValue = productSelect.value; // จำค่าเดิมที่เลือกไว้
+
             let pOpt = '<option value="">-- เลือกสินค้า --</option>';
             products.forEach(p => pOpt += `<option value="${p.id}">${p.id} : ${p.name} (คงเหลือ ${p.balance})</option>`);
-            document.getElementById('in-product').innerHTML = pOpt;
+            productSelect.innerHTML = pOpt;
+
+            // คืนค่าที่จำไว้กลับไป (ถ้ามี)
+            if (currentValue) {
+                productSelect.value = currentValue;
+            }
         }
 
         async function submitTransaction() {
             const user = localStorage.getItem('inventory_user');
             const productId = document.getElementById('in-product').value;
             const qty = document.getElementById('in-qty').value;
+            const remark = document.getElementById('in-remark').value; // 🟢 ดึงค่าหมายเหตุ
             
             if(!productId || !qty || qty <= 0) return alert("กรุณาเลือกสินค้าและระบุจำนวนให้ถูกต้อง");
 
@@ -132,7 +146,7 @@
                         type: "IN", 
                         productId: productId, 
                         qty: qty, 
-                        remark: "", 
+                        remark: remark, // 🟢 ส่งหมายเหตุไปบันทึก
                         sellingPrice: 0, 
                         channel: "", 
                         shipMethod: "", 
@@ -143,11 +157,10 @@
                 alert(res.message); 
                 
                 if(res.success) {
-                    // เคลียร์ฟอร์ม
                     document.getElementById('in-product').value = '';
                     document.getElementById('in-qty').value = '';
+                    document.getElementById('in-remark').value = ''; // เคลียร์ช่องหมายเหตุ
                     
-                    // บังคับอัปเดตข้อมูลใหม่หลังจากรับเข้าเสร็จ
                     localStorage.removeItem('pos_init_data');
                     await loadData();
                 }
