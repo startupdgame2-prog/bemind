@@ -87,25 +87,41 @@
                                         <tfoot class="border-top" style="background-color: #fafbfc;">
                                             <tr>
                                                 <td colspan="2" class="ps-3 ps-md-4 pt-4">
+                                                    <!-- เพิ่มช่อง วันที่ และ หมายเหตุ -->
                                                     <div class="row g-2 mb-2">
                                                         <div class="col-6">
+                                                            <label class="small fw-bold text-muted mb-1 ps-1">วันที่ทำรายการ</label>
+                                                            <input type="date" id="out-date" class="form-control form-control-sm border-0 shadow-sm rounded-3 text-secondary">
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <label class="small fw-bold text-muted mb-1 ps-1">หมายเหตุ (ถ้ามี)</label>
+                                                            <input type="text" id="out-remark" class="form-control form-control-sm border-0 shadow-sm rounded-3" placeholder="ระบุหมายเหตุ...">
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="row g-2 mb-2">
+                                                        <div class="col-6">
+                                                            <label class="small fw-bold text-muted mb-1 ps-1">ช่องทางขาย</label>
                                                             <select id="out-channel" class="form-select form-select-sm border-0 shadow-sm rounded-3"><option>ช่องทางขาย</option></select>
                                                         </div>
                                                         <div class="col-6">
+                                                            <label class="small fw-bold text-muted mb-1 ps-1">โปรโมชั่น</label>
                                                             <select id="out-promo" class="form-select form-select-sm border-0 shadow-sm rounded-3 text-danger" onchange="updateSummary()"><option value="">ไม่ใช้โปรโมชั่น</option></select>
                                                         </div>
                                                     </div>
                                                     <div class="row g-2">
                                                         <div class="col-6">
+                                                            <label class="small fw-bold text-muted mb-1 ps-1">การจัดส่ง</label>
                                                             <select id="out-shipping" class="form-select form-select-sm border-0 shadow-sm rounded-3" onchange="updateSummary()"><option>ขนส่ง</option></select>
                                                         </div>
                                                         <div class="col-6">
+                                                            <label class="small fw-bold text-muted mb-1 ps-1">ค่าขนส่ง</label>
                                                             <input type="number" id="out-shipping-cost" class="form-control form-control-sm border-0 shadow-sm rounded-3 text-center" onchange="updateSummary()" placeholder="ค่าส่ง ฿0" value="0">
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td class="text-end pt-4 text-muted small">รวมสินค้า:</td>
-                                                <td class="text-end pe-3 pe-md-4 pt-4 fw-bold" id="sum-subtotal">฿0</td>
+                                                <td class="text-end pt-4 text-muted small align-top">รวมสินค้า:</td>
+                                                <td class="text-end pe-3 pe-md-4 pt-4 fw-bold align-top" id="sum-subtotal">฿0</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="2"></td>
@@ -148,6 +164,12 @@
 
         window.onload = async function() { 
             if (!localStorage.getItem('inventory_user')) window.location.href = "index.html";
+            
+            // ตั้งค่าวันที่ให้เป็นวันปัจจุบันอัตโนมัติ
+            let now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('out-date').value = now.toISOString().slice(0,10);
+
             await loadData(); 
         };
 
@@ -289,11 +311,15 @@
 
         async function submitCart() {
             if(cart.length === 0) return alert("ตะกร้าสินค้าว่างเปล่า");
+            
+            const transDate = document.getElementById('out-date').value;
+            const globalRemark = document.getElementById('out-remark').value;
             const channel = document.getElementById('out-channel').value;
             const shipMethod = document.getElementById('out-shipping').value;
             const shipCost = document.getElementById('out-shipping-cost').value;
             const user = localStorage.getItem('inventory_user') || 'Admin';
 
+            if(!transDate) return alert("กรุณาเลือกวันที่ทำรายการ");
             if(!channel || !shipMethod || channel==="ช่องทางขาย" || shipMethod==="ขนส่ง") return alert("เลือกช่องทางและขนส่งให้ครบถ้วน");
 
             let finalPayloadCart = [];
@@ -312,7 +338,17 @@
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST', headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ action: "saveCartTransaction", user, cart: finalPayloadCart, channel, shipMethod, shipCost, netTotal: (subtotal - finalDiscount + Number(shipCost)) })
+                    body: JSON.stringify({ 
+                        action: "saveCartTransaction", 
+                        user: user, 
+                        cart: finalPayloadCart, 
+                        channel: channel, 
+                        shipMethod: shipMethod, 
+                        shipCost: shipCost, 
+                        netTotal: (subtotal - finalDiscount + Number(shipCost)),
+                        date: transDate,            // ส่งวันที่เข้าไปด้วย
+                        globalRemark: globalRemark  // ส่งหมายเหตุเข้าไปด้วย
+                    })
                 });
                 const res = await response.json();
                 alert(res.message);
@@ -322,6 +358,8 @@
                     document.getElementById('out-shipping').selectedIndex = 0;
                     document.getElementById('out-promo').selectedIndex = 0;
                     document.getElementById('out-shipping-cost').value = 0;
+                    document.getElementById('out-remark').value = '';
+                    
                     updateSummary();
                     
                     // บังคับอัปเดตข้อมูลใหม่หลังจากขายเสร็จ
