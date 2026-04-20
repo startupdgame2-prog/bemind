@@ -7,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -15,11 +14,14 @@
     <div class="d-flex" id="wrapper">
         <div id="mobile-overlay" onclick="toggleMenu()"></div>
         
+        <!-- เมนูด้านซ้าย -->
         <div id="sidebar-wrapper">
-            <div class="sidebar-heading text-center py-4 fs-4 fw-bold border-bottom mb-2 d-flex align-items-center justify-content-center">
-    <img src="logo.jpg" alt="Bemind Logo" style="width: 42px; height: 42px; border-radius: 10px; object-fit: cover;" class="me-2 shadow-sm">
-    <span style="color: var(--brand-teal); font-weight: 800; letter-spacing: 0.5px;">Bemind POS</span>
-</div>
+            <!-- 🟢 โลโก้แบรนด์ Bemind -->
+            <div class="sidebar-heading text-center py-4 fs-5 fw-bold border-bottom mb-2 d-flex align-items-center justify-content-center">
+                <img src="logo.jpg" alt="Bemind Logo" style="width: 42px; height: 42px; border-radius: 10px; object-fit: cover;" class="me-2 shadow-sm">
+                <span style="color: var(--brand-teal); font-weight: 800; letter-spacing: 0.5px;">Bemind POS</span>
+            </div>
+            
             <div class="list-group list-group-flush">
                 <a href="dashboard.html" class="list-group-item list-group-item-action active fw-bold"><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</a>
                 <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
@@ -47,21 +49,24 @@
                 
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-xl-3">
-                        <div class="card-custom p-3 p-md-4 h-100 border-start border-primary border-4 shadow-sm" style="background-color: var(--primary-light);">
-                            <p class="text-primary mb-1 small fw-bold"><i class="bi bi-cash-stack me-1"></i> ยอดขายสะสม (ทั้งหมด)</p>
-                            <h4 class="text-primary fw-bold mb-0 text-truncate" id="all-sales">฿0</h4>
+                        <div class="card-custom p-3 p-md-4 h-100 border-start border-4 shadow-sm" style="background-color: var(--primary-light); border-color: var(--brand-teal) !important;">
+                            <p class="mb-1 small fw-bold" style="color: var(--brand-teal);"><i class="bi bi-cash-stack me-1"></i> ยอดขายสะสม (ทั้งหมด)</p>
+                            <h4 class="fw-bold mb-0 text-truncate" style="color: var(--brand-teal);" id="all-sales">฿0</h4>
                         </div>
                     </div>
                     <div class="col-6 col-xl-3">
-                        <div class="card-custom p-3 p-md-4 h-100 border-start border-success border-4 shadow-sm" style="background-color: var(--success-light);">
-                            <p class="text-success mb-1 small fw-bold"><i class="bi bi-piggy-bank me-1"></i> กำไรสะสม (ทั้งหมด)</p>
-                            <h4 class="text-success fw-bold mb-0 text-truncate" id="all-profit">฿0</h4>
+                        <div class="card-custom p-3 p-md-4 h-100 border-start border-4 shadow-sm" style="background-color: var(--danger-light); border-color: var(--brand-pink) !important;">
+                            <p class="mb-1 small fw-bold" style="color: var(--brand-pink);"><i class="bi bi-piggy-bank me-1"></i> กำไรสะสม (ทั้งหมด)</p>
+                            <h4 class="fw-bold mb-0 text-truncate" style="color: var(--brand-pink);" id="all-profit">฿0</h4>
                         </div>
                     </div>
+                    
                     <div class="col-6 col-xl-3">
-                        <div class="card-custom p-3 p-md-4 h-100 bg-white shadow-sm border">
+                        <!-- 🟢 เพิ่มปุ่มดูแยกช่องทาง -->
+                        <div class="card-custom p-3 p-md-4 h-100 bg-white shadow-sm border position-relative">
                             <p class="text-secondary mb-1 small fw-bold"><i class="bi bi-calendar-event me-1"></i> ยอดขาย (วันนี้)</p>
                             <h4 class="text-dark fw-bold mb-0 text-truncate" id="today-sales">฿0</h4>
+                            <button class="btn btn-sm btn-light border position-absolute top-0 end-0 mt-3 me-3 text-secondary" style="font-size: 0.75rem;" onclick="openChannelModal()"><i class="bi bi-list-ul"></i> ดูช่องทาง</button>
                         </div>
                     </div>
                     <div class="col-6 col-xl-3">
@@ -75,15 +80,17 @@
                 <div class="row g-4 mb-4">
                     <div class="col-xl-8">
                         <div class="card-custom p-4 h-100 bg-white shadow-sm border">
-                            <h6 class="fw-bold text-secondary mb-4"><i class="bi bi-bar-chart-line-fill me-2 text-primary"></i>กราฟยอดขายย้อนหลัง (14 วันล่าสุด)</h6>
+                            <h6 class="fw-bold text-secondary mb-4"><i class="bi bi-bar-chart-line-fill me-2" style="color: var(--brand-teal);"></i>กราฟยอดขายย้อนหลัง (14 วันล่าสุด)</h6>
                             <div style="height: 300px; width: 100%;">
                                 <canvas id="salesLineChart"></canvas>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-4">
-                        <div class="card-custom p-4 h-100 bg-white shadow-sm border">
-                            <h6 class="fw-bold text-secondary mb-4"><i class="bi bi-pie-chart-fill me-2 text-warning"></i>สัดส่วนสินค้าขายดี (จำนวนชิ้น)</h6>
+                        <!-- 🟢 เพิ่มปุ่มดูแยกสินค้าทั้งหมด -->
+                        <div class="card-custom p-4 h-100 bg-white shadow-sm border position-relative">
+                            <h6 class="fw-bold text-secondary mb-4"><i class="bi bi-pie-chart-fill me-2" style="color: var(--brand-pink);"></i>สัดส่วนสินค้าขายดี</h6>
+                            <button class="btn btn-sm btn-light border position-absolute top-0 end-0 mt-3 me-3 text-secondary" style="font-size: 0.75rem;" onclick="openProductModal()"><i class="bi bi-list-ul"></i> ดูทั้งหมด</button>
                             <div style="height: 250px; width: 100%; display: flex; justify-content: center;">
                                 <canvas id="productDoughnutChart"></canvas>
                             </div>
@@ -143,12 +150,54 @@
         </div>
     </div>
 
+    <!-- 🟢 Modal หน้ารอง: ยอดขายแยกตามช่องทาง -->
+    <div class="modal fade" id="channelModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0" style="background-color: var(--primary-light);">
+                    <h5 class="modal-title fw-bold" style="color: var(--brand-teal);"><i class="bi bi-shop me-2"></i>ยอดขายแยกช่องทาง (วันนี้)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light sticky-top">
+                            <tr><th class="ps-4">ชื่อช่องทาง</th><th class="text-end pe-4">ยอดขาย (บาท)</th></tr>
+                        </thead>
+                        <tbody id="channel-modal-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🟢 Modal หน้ารอง: ยอดขายแยกตามสินค้า -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0" style="background-color: var(--danger-light);">
+                    <h5 class="modal-title fw-bold" style="color: var(--brand-pink);"><i class="bi bi-box-seam me-2"></i>จำนวนขายแยกรายชิ้น (สะสม)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light sticky-top">
+                            <tr><th class="ps-4">รายการสินค้า</th><th class="text-end pe-4">จำนวนที่ขายได้</th></tr>
+                        </thead>
+                        <tbody id="product-modal-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
+        let globalDashData = null; // เก็บข้อมูลไว้ใช้ตอนเปิด Modal
+
         function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
 
-        // สีพาสเทลสำหรับกราฟ
-        const chartColors = ['#7ba4e3', '#88c9a1', '#fcd47b', '#f28b82', '#b8a1e6', '#90e0ef', '#ffb5a7'];
+        // โทนสีพาสเทลสำหรับกราฟ
+        const chartColors = ['#FA6BBA', '#149E9A', '#fcd47b', '#b8a1e6', '#90e0ef', '#ffb5a7'];
 
         window.onload = async function() {
             const currentUser = localStorage.getItem('inventory_user');
@@ -159,45 +208,65 @@
                 const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "getDashboard" }) });
                 const data = await response.json();
                 
-                // 1. ลงข้อมูลกล่อง KPI ด้านบน
+                globalDashData = data; // บันทึกข้อมูลไว้ให้ Modal ใช้
+
                 document.getElementById('all-sales').innerText = "฿" + (data.allTimeSales || 0).toLocaleString();
                 document.getElementById('all-profit').innerText = "฿" + (data.allTimeProfit || 0).toLocaleString();
                 document.getElementById('today-sales').innerText = "฿" + (data.todaySales || 0).toLocaleString();
                 document.getElementById('today-profit').innerText = "฿" + (data.todayProfit || 0).toLocaleString();
 
-                // 2. เตรียมข้อมูลและวาดกราฟเส้น (ยอดขายย้อนหลัง)
                 renderLineChart(data.salesChartData);
-
-                // 3. เตรียมข้อมูลและวาดกราฟโดนัท (สินค้ายอดฮิต)
                 renderDoughnutChart(data.productChartData);
-
-                // 4. ลงข้อมูลตารางรายการขายล่าสุด
                 renderRecentSales(data.recentSales);
-
-                // 5. ลงข้อมูลตารางสินค้าใกล้หมด
                 renderLowStock(data.lowStock);
 
             } catch (error) { 
-                console.error(error); 
                 document.getElementById('recent-sales-body').innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
             }
         }
 
-        // --- ฟังก์ชันวาดกราฟเส้น (ยอดขาย 14 วันล่าสุด) ---
+        // 🟢 ฟังก์ชันเปิด Modal แยกช่องทาง
+        function openChannelModal() {
+            if(!globalDashData) return;
+            let html = '';
+            // เรียงลำดับจากยอดขายมากไปน้อย
+            let sortedChannels = Object.entries(globalDashData.channelSales).sort((a,b) => b[1] - a[1]);
+            
+            if(sortedChannels.length === 0) {
+                html = '<tr><td colspan="2" class="text-center text-muted py-5">ยังไม่มียอดขายวันนี้</td></tr>';
+            } else {
+                sortedChannels.forEach(([ch, amt]) => {
+                    html += `<tr><td class="ps-4 fw-bold text-dark">${ch}</td><td class="text-end pe-4 text-success fw-bold">฿${amt.toLocaleString()}</td></tr>`;
+                });
+            }
+            document.getElementById('channel-modal-body').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('channelModal')).show();
+        }
+
+        // 🟢 ฟังก์ชันเปิด Modal แยกรายสินค้า
+        function openProductModal() {
+            if(!globalDashData) return;
+            let html = '';
+            // เรียงลำดับจากจำนวนชิ้นมากไปน้อย
+            let sortedProds = Object.entries(globalDashData.productChartData).sort((a,b) => b[1] - a[1]);
+            
+            if(sortedProds.length === 0) {
+                html = '<tr><td colspan="2" class="text-center text-muted py-5">ยังไม่มีประวัติการขายสินค้า</td></tr>';
+            } else {
+                sortedProds.forEach(([name, qty]) => {
+                    html += `<tr><td class="ps-4 fw-bold text-dark text-truncate" style="max-width:250px;">${name}</td><td class="text-end pe-4 text-primary fw-bold">${qty.toLocaleString()} ชิ้น</td></tr>`;
+                });
+            }
+            document.getElementById('product-modal-body').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('productModal')).show();
+        }
+
         function renderLineChart(salesData) {
             const ctx = document.getElementById('salesLineChart').getContext('2d');
-            
-            // เรียงวันที่จากอดีต -> ปัจจุบัน
             let dates = Object.keys(salesData).sort();
-            // ตัดเอาแค่ 14 วันล่าสุด
             if(dates.length > 14) dates = dates.slice(dates.length - 14);
-            
             let values = dates.map(d => salesData[d]);
-
-            // จัดฟอร์แมตวันที่ให้ดูง่ายขึ้น (เช่น 20/04)
-            let labels = dates.map(d => {
-                let parts = d.split('-'); return `${parts[2]}/${parts[1]}`;
-            });
+            let labels = dates.map(d => { let parts = d.split('-'); return `${parts[2]}/${parts[1]}`; });
 
             new Chart(ctx, {
                 type: 'line',
@@ -206,14 +275,14 @@
                     datasets: [{
                         label: 'ยอดขาย (บาท)',
                         data: values,
-                        borderColor: '#7ba4e3',
-                        backgroundColor: 'rgba(123, 164, 227, 0.2)',
+                        borderColor: '#149E9A',
+                        backgroundColor: 'rgba(20, 158, 154, 0.15)',
                         borderWidth: 3,
                         pointBackgroundColor: '#fff',
-                        pointBorderColor: '#7ba4e3',
+                        pointBorderColor: '#149E9A',
                         pointRadius: 4,
                         fill: true,
-                        tension: 0.3 // ทำเส้นให้โค้งมนสวยงาม
+                        tension: 0.3 
                     }]
                 },
                 options: {
@@ -228,11 +297,8 @@
             });
         }
 
-        // --- ฟังก์ชันวาดกราฟโดนัท (สินค้าขายดี Top 5) ---
         function renderDoughnutChart(productData) {
             const ctx = document.getElementById('productDoughnutChart').getContext('2d');
-            
-            // เรียงจากขายดีสุดไปน้อยสุด และตัดมาแค่ Top 5
             let sortable = [];
             for (let p in productData) sortable.push([p, productData[p]]);
             sortable.sort((a, b) => b[1] - a[1]);
@@ -241,38 +307,27 @@
             let labels = top5.map(item => item[0]);
             let values = top5.map(item => item[1]);
 
-            if(labels.length === 0) {
-                labels = ["ยังไม่มีข้อมูล"]; values = [1];
-            }
+            if(labels.length === 0) { labels = ["ยังไม่มีข้อมูล"]; values = [1]; }
 
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: chartColors,
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
+                    datasets: [{ data: values, backgroundColor: chartColors, borderWidth: 2, borderColor: '#fff' }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '65%', // ความหนาของวงแหวน
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Prompt' } } }
-                    }
+                    cutout: '65%',
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Prompt' } } } }
                 }
             });
         }
 
-        // --- ฟังก์ชันวาดตารางขายล่าสุด ---
         function renderRecentSales(sales) {
             let html = '';
-            if(sales.length === 0) {
-                html = '<tr><td colspan="5" class="text-center text-muted py-4">ยังไม่มีประวัติการขาย</td></tr>';
-            } else {
+            if(sales.length === 0) { html = '<tr><td colspan="5" class="text-center text-muted py-4">ยังไม่มีประวัติการขาย</td></tr>'; } 
+            else {
                 sales.forEach(s => {
                     html += `<tr>
                         <td class="ps-4 text-muted">${s.time}</td>
@@ -286,12 +341,10 @@
             document.getElementById('recent-sales-body').innerHTML = html;
         }
 
-        // --- ฟังก์ชันวาดตารางสินค้าใกล้หมด ---
         function renderLowStock(items) {
             let html = '';
-            if(items.length === 0) {
-                html = '<tr><td colspan="2" class="text-center text-success py-4"><i class="bi bi-check-circle me-2"></i>สต๊อกสินค้าปกติทั้งหมด</td></tr>';
-            } else {
+            if(items.length === 0) { html = '<tr><td colspan="2" class="text-center text-success py-4"><i class="bi bi-check-circle me-2"></i>สต๊อกสินค้าปกติทั้งหมด</td></tr>'; } 
+            else {
                 items.forEach(item => {
                     let badgeClass = item.bal <= 3 ? 'bg-danger' : 'bg-warning text-dark';
                     html += `<tr>
