@@ -39,24 +39,26 @@
 
             <div class="container-fluid px-3 px-md-4 pb-5">
                 
+                <!-- สรุปของ "วันนี้" -->
                 <div class="card-custom p-4 mb-4" style="background-color: var(--primary-light); border: 1px solid var(--primary-color);">
-                    <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-bar-chart-line me-2"></i>สรุปการจัดส่งวันนี้</h5>
+                    <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-bar-chart-line me-2"></i>สรุปกล่องจัดส่ง (เฉพาะวันนี้)</h5>
                     <div class="row" id="shipping-summary-boxes">
                         <div class="col-12"><div class="text-center text-muted small py-3">กำลังคำนวณข้อมูล...</div></div>
                     </div>
                 </div>
 
-                <div class="card-custom overflow-hidden">
+                <!-- รายการออเดอร์ทั้งหมด (แบ่งหน้า) -->
+                <div class="card-custom overflow-hidden mb-4">
                     <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-2 d-flex justify-content-between align-items-center">
-                        <h5 class="fw-bold m-0"><i class="bi bi-box-seam me-2 text-warning"></i>รายการที่ต้องจัดส่ง (ล่าสุด)</h5>
-                        <button class="btn btn-sm btn-light border shadow-sm" onclick="loadShippingData()"><i class="bi bi-arrow-clockwise"></i> รีเฟรช</button>
+                        <h5 class="fw-bold m-0"><i class="bi bi-box-seam me-2 text-warning"></i>ประวัติออเดอร์ทั้งหมด</h5>
+                        <button class="btn btn-sm btn-light border shadow-sm" onclick="fetchData()"><i class="bi bi-arrow-clockwise"></i> รีเฟรช</button>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover align-middle table-borderless mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th class="ps-4 py-3 text-center" style="width: 80px;">เวลา</th>
+                                        <th class="ps-4 py-3 text-center" style="width: 140px;">วัน/เวลา</th>
                                         <th>รายการสินค้า / หมายเหตุ</th>
                                         <th class="text-center">ขนส่ง</th>
                                         <th class="text-center pe-4">ค่าส่ง</th>
@@ -68,6 +70,15 @@
                             </table>
                         </div>
                     </div>
+                    
+                    <!-- 🟢 ปุ่มเปลี่ยนหน้า (Pagination) -->
+                    <div class="card-footer bg-white border-top py-3 px-4 d-flex justify-content-between align-items-center">
+                        <span class="text-muted small fw-bold" id="page-info">กำลังประมวลผล...</span>
+                        <div class="btn-group shadow-sm">
+                            <button class="btn btn-light border btn-sm text-secondary" id="btn-prev" onclick="changePage(-1)" disabled><i class="bi bi-chevron-left"></i> ก่อนหน้า</button>
+                            <button class="btn btn-light border btn-sm text-secondary" id="btn-next" onclick="changePage(1)" disabled>ถัดไป <i class="bi bi-chevron-right"></i></button>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -76,20 +87,25 @@
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
+        
+        let allOrders = [];     // เก็บออเดอร์ทั้งหมดที่ดึงมา
+        let currentPage = 1;    // หน้าปัจจุบัน
+        const itemsPerPage = 50; // 🟢 กำหนดให้โชว์หน้าละ 50 รายการ
+
         function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
 
         window.onload = function() {
             if (!localStorage.getItem('inventory_user')) window.location.href = "index.html";
-            loadShippingData();
+            fetchData();
         }
 
-        async function loadShippingData() {
+        async function fetchData() {
             document.getElementById('shipping-table-body').innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5"><div class="spinner-border text-primary spinner-border-sm me-2"></div>ดึงข้อมูลล่าสุด...</td></tr>';
             try {
                 let res = await fetch(API_URL, { method:'POST', headers: { 'Content-Type': 'text/plain' }, body:JSON.stringify({action:"getDashboard"}) });
                 let data = await res.json();
                 
-                // 1. วาดกล่องสรุปด้านบน
+                // 1. วาดกล่องสรุปเฉพาะของ "วันนี้" ด้านบน
                 let summaryHtml = '';
                 if(Object.keys(data.shipStats).length === 0) {
                     summaryHtml = `<div class="col-12"><div class="text-center text-secondary small py-2">ยังไม่มีรายการจัดส่งสำหรับวันนี้</div></div>`;
@@ -107,30 +123,58 @@
                 }
                 document.getElementById('shipping-summary-boxes').innerHTML = summaryHtml;
 
-                // 2. วาดตารางรายการออเดอร์
-                let listHtml = '';
-                if(data.shippingOrdersList.length === 0) {
-                    listHtml = '<tr><td colspan="4" class="text-center text-muted py-5"><i class="bi bi-box fs-1 d-block mb-2 opacity-25"></i>ไม่มีออเดอร์ค้างส่ง</td></tr>';
-                } else {
-                    data.shippingOrdersList.forEach(order => {
-                        let remarkBadge = order.remark && order.remark !== "-" ? `<span class="badge bg-warning text-dark mt-1"><i class="bi bi-info-circle me-1"></i>${order.remark}</span>` : "";
-                        listHtml += `
-                        <tr class="border-bottom">
-                            <td class="ps-4 py-3 text-center"><span class="badge bg-light text-secondary border px-2 py-1">${order.time}</span></td>
-                            <td>
-                                <div class="fw-bold text-dark" style="font-size: 0.95rem;">${order.detail}</div>
-                                ${remarkBadge}
-                            </td>
-                            <td class="text-center"><span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill border border-primary border-opacity-25">${order.method}</span></td>
-                            <td class="text-center pe-4 fw-bold text-danger">฿${order.cost.toLocaleString()}</td>
-                        </tr>`;
-                    });
-                }
-                document.getElementById('shipping-table-body').innerHTML = listHtml;
+                // 2. เก็บออเดอร์ทั้งหมดไว้ แล้วสั่งให้วาดตารางหน้าแรก
+                allOrders = data.shippingOrdersList;
+                currentPage = 1;
+                renderTable();
 
             } catch(e) {
                 document.getElementById('shipping-table-body').innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
             }
+        }
+
+        // 🟢 ฟังก์ชันวาดตารางตามหน้า (Pagination)
+        function renderTable() {
+            let listHtml = '';
+            
+            if(allOrders.length === 0) {
+                listHtml = '<tr><td colspan="4" class="text-center text-muted py-5"><i class="bi bi-box fs-1 d-block mb-2 opacity-25"></i>ไม่มีออเดอร์จัดส่ง</td></tr>';
+                document.getElementById('page-info').innerText = "รายการที่ 0 - 0 จากทั้งหมด 0";
+                document.getElementById('btn-prev').disabled = true;
+                document.getElementById('btn-next').disabled = true;
+            } else {
+                // คำนวณขอบเขตข้อมูลที่จะโชว์ในหน้านี้
+                let startIndex = (currentPage - 1) * itemsPerPage;
+                let endIndex = Math.min(startIndex + itemsPerPage, allOrders.length);
+                let currentItems = allOrders.slice(startIndex, endIndex);
+
+                currentItems.forEach(order => {
+                    let remarkBadge = order.remark && order.remark !== "-" ? `<span class="badge bg-warning text-dark mt-1"><i class="bi bi-info-circle me-1"></i>${order.remark}</span>` : "";
+                    listHtml += `
+                    <tr class="border-bottom">
+                        <td class="ps-4 py-3 text-center"><span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 0.8rem;">${order.time}</span></td>
+                        <td>
+                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">${order.detail}</div>
+                            ${remarkBadge}
+                        </td>
+                        <td class="text-center"><span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill border border-primary border-opacity-25">${order.method}</span></td>
+                        <td class="text-center pe-4 fw-bold text-danger">฿${order.cost.toLocaleString()}</td>
+                    </tr>`;
+                });
+
+                // อัปเดตข้อความบอกหน้า และเปิดปิดปุ่ม
+                document.getElementById('page-info').innerText = `รายการที่ ${startIndex + 1} - ${endIndex} จากทั้งหมด ${allOrders.length}`;
+                document.getElementById('btn-prev').disabled = (currentPage === 1);
+                document.getElementById('btn-next').disabled = (endIndex >= allOrders.length);
+            }
+            
+            document.getElementById('shipping-table-body').innerHTML = listHtml;
+        }
+
+        // 🟢 ฟังก์ชันกดเลื่อนหน้า
+        function changePage(direction) {
+            currentPage += direction;
+            renderTable();
         }
         
         function logout() { localStorage.removeItem('inventory_user'); window.location.href = "index.html"; }
