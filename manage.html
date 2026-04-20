@@ -2,67 +2,73 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>จัดการสินค้า | ระบบจัดการธุรกิจ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>จัดการสินค้า | Bemind POS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-light">
+<body>
     <div class="d-flex" id="wrapper">
-        <div class="bg-dark text-white" id="sidebar-wrapper">
-            <div class="sidebar-heading text-center py-4 fs-4 fw-bold text-uppercase border-bottom border-secondary">
-                <i class="bi bi-box-seam"></i> POS System
-            </div>
-            <div class="list-group list-group-flush my-3">
-                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent text-white"><i class="bi bi-speedometer2 me-2"></i> ภาพรวม (Dashboard)</a>
-                <a href="inventory.html" class="list-group-item list-group-item-action bg-transparent text-white"><i class="bi bi-cart-plus me-2"></i> รับเข้า/เบิกจ่าย</a>
-                <a href="shipping.html" class="list-group-item list-group-item-action bg-transparent text-white"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
-                <a href="manage.html" class="list-group-item list-group-item-action bg-transparent text-white active fw-bold"><i class="bi bi-box me-2"></i> จัดการสินค้า</a>
-                <a href="#" onclick="logout()" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold mt-5"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
+        <div id="mobile-overlay" onclick="toggleMenu()"></div>
+        <div id="sidebar-wrapper">
+            <div class="sidebar-heading text-center py-4 fs-4 fw-bold border-bottom mb-2"><i class="bi bi-box-seam me-2"></i>Bemind POS</div>
+            <div class="list-group list-group-flush">
+                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</a>
+                
+                <!-- เมนูจัดการสต๊อกแบบใหม่ -->
+                <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action bg-transparent d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-box-seam me-2"></i> จัดการสต๊อก</span><i class="bi bi-chevron-down small"></i>
+                </a>
+                <div class="collapse" id="inventorySubmenu">
+                    <a href="receive.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0"><i class="bi bi-box-arrow-in-down me-2"></i> รับเข้า (IN)</a>
+                    <a href="issue.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0"><i class="bi bi-cart3 me-2"></i> จุดขายสินค้า (POS)</a>
+                </div>
+
+                <a href="shipping.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
+                <a href="manage.html" class="list-group-item list-group-item-action bg-transparent active fw-bold"><i class="bi bi-gear me-2"></i> จัดการสินค้า</a>
+                <a href="#" onclick="logout()" class="list-group-item list-group-item-action bg-transparent text-danger mt-4"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
             </div>
         </div>
 
         <div id="page-content-wrapper" class="w-100">
-            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
-                <h5 class="m-0 fw-bold text-dark">ระบบจัดการสินค้าและช่องทาง</h5>
+            <nav class="navbar navbar-light bg-white py-3 px-3 shadow-sm mb-4 sticky-top">
+                <div class="d-flex align-items-center w-100">
+                    <button class="btn btn-light d-md-none me-3 rounded-circle" onclick="toggleMenu()"><i class="bi bi-list fs-4 text-secondary"></i></button>
+                    <h5 class="m-0 fw-bold text-secondary">ตั้งค่าระบบและสินค้า</h5>
+                </div>
             </nav>
 
-            <div class="container-fluid px-4 py-4">
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold text-primary mb-4"><i class="bi bi-plus-circle"></i> เพิ่มสินค้าใหม่</h5>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-2"><input type="text" id="new-id" class="form-control" placeholder="รหัสสินค้า"></div>
-                            <div class="col-md-4"><input type="text" id="new-name" class="form-control" placeholder="ชื่อสินค้า"></div>
-                            <div class="col-md-2"><input type="text" id="new-cat" class="form-control" placeholder="หมวดหมู่"></div>
-                            <div class="col-md-2"><input type="number" id="new-bal" class="form-control" placeholder="จำนวนเริ่ม"></div>
-                            <div class="col-md-2"><input type="number" id="new-cost" class="form-control" placeholder="ทุน/ชิ้น"></div>
-                        </div>
-                        <button class="btn btn-primary w-100 fw-bold rounded-pill" onclick="handleAddProduct()">เพิ่มเข้าระบบ</button>
+            <div class="container-fluid px-3 px-md-4 pb-5">
+                <div class="card-custom p-4 mb-4">
+                    <h5 class="fw-bold text-primary mb-4"><i class="bi bi-plus-circle me-2"></i>เพิ่มสินค้าใหม่</h5>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-2"><input type="text" id="new-id" class="form-control bg-light border-0" placeholder="รหัสสินค้า"></div>
+                        <div class="col-md-4"><input type="text" id="new-name" class="form-control bg-light border-0" placeholder="ชื่อสินค้า"></div>
+                        <div class="col-md-2"><input type="text" id="new-cat" class="form-control bg-light border-0" placeholder="หมวดหมู่"></div>
+                        <div class="col-md-2"><input type="number" id="new-bal" class="form-control bg-light border-0" placeholder="จำนวนเริ่ม"></div>
+                        <div class="col-md-2"><input type="number" id="new-cost" class="form-control bg-light border-0" placeholder="ทุน/ชิ้น"></div>
                     </div>
+                    <button class="btn btn-pastel-primary w-100 fw-bold rounded-pill" onclick="handleAddProduct()">เพิ่มเข้าระบบ</button>
                 </div>
 
                 <div class="row g-4">
                     <div class="col-md-6">
-                        <div class="card border-0 shadow-sm rounded-4 h-100">
-                            <div class="card-body p-4">
-                                <h5 class="fw-bold text-danger mb-4"><i class="bi bi-trash"></i> ลบสินค้าออก</h5>
-                                <div class="input-group mb-3">
-                                    <select id="del-product" class="form-select"><option>กำลังโหลด...</option></select>
-                                    <button class="btn btn-outline-danger fw-bold" onclick="handleDeleteProduct()">ลบทิ้ง</button>
-                                </div>
+                        <div class="card-custom p-4 h-100">
+                            <h5 class="fw-bold text-danger mb-4"><i class="bi bi-trash3 me-2"></i>ลบสินค้าออก</h5>
+                            <div class="input-group">
+                                <select id="del-product" class="form-select bg-light border-0"><option>กำลังโหลด...</option></select>
+                                <button class="btn btn-outline-danger fw-bold" onclick="handleDeleteProduct()">ลบทิ้ง</button>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card border-0 shadow-sm rounded-4 h-100">
-                            <div class="card-body p-4">
-                                <h5 class="fw-bold text-info mb-4"><i class="bi bi-shop"></i> เพิ่มช่องทางขาย</h5>
-                                <div class="input-group mb-3">
-                                    <input type="text" id="new-channel" class="form-control" placeholder="เช่น Shopee">
-                                    <button class="btn btn-info text-white fw-bold" onclick="handleAddChannel()">เพิ่ม</button>
-                                </div>
+                        <div class="card-custom p-4 h-100">
+                            <h5 class="fw-bold text-info mb-4"><i class="bi bi-shop me-2"></i>เพิ่มช่องทางขาย</h5>
+                            <div class="input-group">
+                                <input type="text" id="new-channel" class="form-control bg-light border-0" placeholder="เช่น Shopee">
+                                <button class="btn btn-info text-white fw-bold" onclick="handleAddChannel()">เพิ่ม</button>
                             </div>
                         </div>
                     </div>
@@ -72,8 +78,8 @@
     </div>
 
     <script>
-        // ใส่ API ของคุณเรียบร้อยแล้ว
         const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
+        function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
 
         window.onload = function() {
             if (!localStorage.getItem('inventory_user')) window.location.href = "index.html";
@@ -82,56 +88,42 @@
 
         async function loadProductsForDelete() {
             try {
-                const response = await fetch(API_URL, { 
-                    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "getProducts" }) 
-                });
+                const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "getProducts" }) });
                 const res = await response.json();
                 let opt = '<option value="">-- เลือกสินค้า --</option>';
-                if(res.success) { res.data.forEach(p => opt += `<option value="${p.id}">${p.id} : ${p.name}</option>`); }
+                if(res.success) res.data.forEach(p => opt += `<option value="${p.id}">${p.id} : ${p.name}</option>`);
                 document.getElementById('del-product').innerHTML = opt;
-            } catch (error) { console.error(error); }
+            } catch (e) {}
         }
 
         async function handleAddProduct() {
             const id = document.getElementById('new-id').value, name = document.getElementById('new-name').value;
             const cat = document.getElementById('new-cat').value, bal = document.getElementById('new-bal').value;
             const cost = document.getElementById('new-cost').value, user = localStorage.getItem('inventory_user');
-
             if(!id || !name) return alert("กรุณาใส่รหัสและชื่อ");
             try {
-                const response = await fetch(API_URL, { 
-                    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "addProduct", id, name, cat, bal, cost, user }) 
-                });
-                const res = await response.json();
-                alert(res.message); if(res.success) location.reload();
-            } catch (error) { alert("เชื่อมต่อล้มเหลว"); }
+                const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "addProduct", id, name, cat, bal, cost, user }) });
+                const res = await response.json(); alert(res.message); if(res.success) location.reload();
+            } catch (e) { alert("เชื่อมต่อล้มเหลว"); }
         }
 
         async function handleDeleteProduct() {
             const id = document.getElementById('del-product').value, user = localStorage.getItem('inventory_user');
-            if(!id) return alert("กรุณาเลือกสินค้า");
-            if(!confirm("ยืนยันลบ?")) return;
+            if(!id) return alert("กรุณาเลือกสินค้า"); if(!confirm("ยืนยันลบ?")) return;
             try {
-                const response = await fetch(API_URL, { 
-                    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "deleteProduct", id, user }) 
-                });
-                const res = await response.json();
-                alert(res.message); if(res.success) loadProductsForDelete();
-            } catch (error) {}
+                const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "deleteProduct", id, user }) });
+                const res = await response.json(); alert(res.message); if(res.success) loadProductsForDelete();
+            } catch (e) {}
         }
 
         async function handleAddChannel() {
             const channel = document.getElementById('new-channel').value, user = localStorage.getItem('inventory_user');
             if(!channel) return alert("พิมพ์ชื่อช่องทาง");
             try {
-                const response = await fetch(API_URL, { 
-                    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "addChannel", channel, user }) 
-                });
-                const res = await response.json();
-                alert(res.message); if(res.success) document.getElementById('new-channel').value = '';
-            } catch (error) {}
+                const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "addChannel", channel, user }) });
+                const res = await response.json(); alert(res.message); if(res.success) document.getElementById('new-channel').value = '';
+            } catch (e) {}
         }
-
         function logout() { localStorage.removeItem('inventory_user'); window.location.href = "index.html"; }
     </script>
 </body>

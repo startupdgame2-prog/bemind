@@ -2,51 +2,56 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>จัดการขนส่ง | ระบบจัดการธุรกิจ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>จัดการขนส่ง | Bemind POS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-light">
+<body>
     <div class="d-flex" id="wrapper">
-        <div class="bg-dark text-white" id="sidebar-wrapper">
-            <div class="sidebar-heading text-center py-4 fs-4 fw-bold text-uppercase border-bottom border-secondary">
-                <i class="bi bi-box-seam"></i> POS System
-            </div>
-            <div class="list-group list-group-flush my-3">
-                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent text-white"><i class="bi bi-speedometer2 me-2"></i> ภาพรวม (Dashboard)</a>
-                <a href="inventory.html" class="list-group-item list-group-item-action bg-transparent text-white"><i class="bi bi-cart-plus me-2"></i> รับเข้า/เบิกจ่าย</a>
-                <a href="shipping.html" class="list-group-item list-group-item-action bg-transparent text-white active fw-bold"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
-                <a href="manage.html" class="list-group-item list-group-item-action bg-transparent text-white"><i class="bi bi-box me-2"></i> จัดการสินค้า</a>
-                <a href="#" onclick="logout()" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold mt-5"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
+        <div id="mobile-overlay" onclick="toggleMenu()"></div>
+        <div id="sidebar-wrapper">
+            <div class="sidebar-heading text-center py-4 fs-4 fw-bold border-bottom mb-2"><i class="bi bi-box-seam me-2"></i>Bemind POS</div>
+            <div class="list-group list-group-flush">
+                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</a>
+                
+                <!-- เมนูจัดการสต๊อกแบบใหม่ -->
+                <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action bg-transparent d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-box-seam me-2"></i> จัดการสต๊อก</span><i class="bi bi-chevron-down small"></i>
+                </a>
+                <div class="collapse" id="inventorySubmenu">
+                    <a href="receive.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0"><i class="bi bi-box-arrow-in-down me-2"></i> รับเข้า (IN)</a>
+                    <a href="issue.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0"><i class="bi bi-cart3 me-2"></i> จุดขายสินค้า (POS)</a>
+                </div>
+
+                <a href="shipping.html" class="list-group-item list-group-item-action bg-transparent active fw-bold"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
+                <a href="manage.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-gear me-2"></i> จัดการสินค้า</a>
+                <a href="#" onclick="logout()" class="list-group-item list-group-item-action bg-transparent text-danger mt-4"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
             </div>
         </div>
 
         <div id="page-content-wrapper" class="w-100">
-            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
-                <h5 class="m-0 fw-bold text-dark">ระบบจัดการขนส่ง</h5>
+            <nav class="navbar navbar-light bg-white py-3 px-3 shadow-sm mb-4 sticky-top">
+                <div class="d-flex align-items-center w-100">
+                    <button class="btn btn-light d-md-none me-3 rounded-circle" onclick="toggleMenu()"><i class="bi bi-list fs-4 text-secondary"></i></button>
+                    <h5 class="m-0 fw-bold text-secondary">สรุปการจัดส่งวันนี้</h5>
+                </div>
             </nav>
 
-            <div class="container-fluid px-4 py-4">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-4">สถานะการจัดส่งวันนี้</h5>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>บริษัทขนส่ง</th>
-                                        <th>จำนวนออเดอร์</th>
-                                        <th>ค่าจัดส่งรวม</th>
-                                        <th>สถานะ</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="shipping-table-body">
-                                    <tr><td colspan="4" class="text-center">กำลังโหลดข้อมูล...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+            <div class="container-fluid px-3 px-md-4 pb-5">
+                <div class="card-custom p-3 p-md-4">
+                    <h5 class="fw-bold mb-4 text-primary"><i class="bi bi-truck me-2"></i>สถานะออเดอร์จัดส่ง</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr><th>บริษัทขนส่ง</th><th class="text-center">จำนวนออเดอร์</th><th class="text-center">ค่าจัดส่งรวม</th><th class="text-end">สถานะ</th></tr>
+                            </thead>
+                            <tbody id="shipping-table-body">
+                                <tr><td colspan="4" class="text-center text-muted py-4">กำลังโหลดข้อมูล...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -54,36 +59,27 @@
     </div>
 
     <script>
-        // ใส่ API ของคุณเรียบร้อยแล้ว
         const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
+        function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
 
         window.onload = async function() {
             if (!localStorage.getItem('inventory_user')) window.location.href = "index.html";
-            
             try {
-                let res = await fetch(API_URL, {
-                    method:'POST', 
-                    headers: { 'Content-Type': 'text/plain' }, 
-                    body:JSON.stringify({action:"getDashboard"})
-                });
+                let res = await fetch(API_URL, { method:'POST', headers: { 'Content-Type': 'text/plain' }, body:JSON.stringify({action:"getDashboard"}) });
                 let data = await res.json();
                 let html = '';
-                
                 for(const [method, stat] of Object.entries(data.shipStats)) {
                     html += `<tr>
-                        <td class="fw-bold">${method}</td>
-                        <td>${stat.count} กล่อง</td>
-                        <td class="text-danger">฿${stat.cost.toLocaleString()}</td>
-                        <td><span class="badge bg-success">บันทึกในระบบแล้ว</span></td>
+                        <td class="fw-bold text-dark">${method}</td>
+                        <td class="text-center">${stat.count} กล่อง</td>
+                        <td class="text-center text-danger fw-bold">฿${stat.cost.toLocaleString()}</td>
+                        <td class="text-end"><span class="badge bg-success bg-opacity-25 text-success px-3 py-2 rounded-pill">บันทึกแล้ว</span></td>
                     </tr>`;
                 }
-                
-                if(html === '') html = '<tr><td colspan="4" class="text-center text-muted">ยังไม่มีการจัดส่งวันนี้</td></tr>';
+                if(html === '') html = '<tr><td colspan="4" class="text-center text-muted py-4">ยังไม่มีการจัดส่งวันนี้</td></tr>';
                 document.getElementById('shipping-table-body').innerHTML = html;
-
-            } catch(e) { console.error(e); }
+            } catch(e) {}
         }
-
         function logout() { localStorage.removeItem('inventory_user'); window.location.href = "index.html"; }
     </script>
 </body>
