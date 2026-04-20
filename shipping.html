@@ -15,20 +15,17 @@
         <div id="sidebar-wrapper">
             <div class="sidebar-heading text-center py-4 fs-4 fw-bold border-bottom mb-2"><i class="bi bi-box-seam me-2"></i>Bemind POS</div>
             <div class="list-group list-group-flush">
-                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</a>
-                
-                <!-- เมนูจัดการสต๊อกแบบใหม่ -->
-                <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action bg-transparent d-flex justify-content-between align-items-center">
+                <a href="dashboard.html" class="list-group-item list-group-item-action"><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</a>
+                <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                     <span><i class="bi bi-box-seam me-2"></i> จัดการสต๊อก</span><i class="bi bi-chevron-down small"></i>
                 </a>
                 <div class="collapse" id="inventorySubmenu">
-                    <a href="receive.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0"><i class="bi bi-box-arrow-in-down me-2"></i> รับเข้า (IN)</a>
-                    <a href="issue.html" class="list-group-item list-group-item-action bg-transparent ps-5 border-0"><i class="bi bi-cart3 me-2"></i> จุดขายสินค้า (POS)</a>
+                    <a href="receive.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-box-arrow-in-down me-2"></i> รับเข้า (IN)</a>
+                    <a href="issue.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-cart3 me-2"></i> จุดขายสินค้า (POS)</a>
                 </div>
-
-                <a href="shipping.html" class="list-group-item list-group-item-action bg-transparent active fw-bold"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
-                <a href="manage.html" class="list-group-item list-group-item-action bg-transparent"><i class="bi bi-gear me-2"></i> จัดการสินค้า</a>
-                <a href="#" onclick="logout()" class="list-group-item list-group-item-action bg-transparent text-danger mt-4"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
+                <a href="shipping.html" class="list-group-item list-group-item-action active fw-bold"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
+                <a href="manage.html" class="list-group-item list-group-item-action"><i class="bi bi-gear me-2"></i> จัดการสินค้า</a>
+                <a href="#" onclick="logout()" class="list-group-item list-group-item-action text-danger mt-4"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
             </div>
         </div>
 
@@ -36,24 +33,43 @@
             <nav class="navbar navbar-light bg-white py-3 px-3 shadow-sm mb-4 sticky-top">
                 <div class="d-flex align-items-center w-100">
                     <button class="btn btn-light d-md-none me-3 rounded-circle" onclick="toggleMenu()"><i class="bi bi-list fs-4 text-secondary"></i></button>
-                    <h5 class="m-0 fw-bold text-secondary">สรุปการจัดส่งวันนี้</h5>
+                    <h5 class="m-0 fw-bold text-secondary">จัดการออเดอร์และขนส่ง</h5>
                 </div>
             </nav>
 
             <div class="container-fluid px-3 px-md-4 pb-5">
-                <div class="card-custom p-3 p-md-4">
-                    <h5 class="fw-bold mb-4 text-primary"><i class="bi bi-truck me-2"></i>สถานะออเดอร์จัดส่ง</h5>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
-                                <tr><th>บริษัทขนส่ง</th><th class="text-center">จำนวนออเดอร์</th><th class="text-center">ค่าจัดส่งรวม</th><th class="text-end">สถานะ</th></tr>
-                            </thead>
-                            <tbody id="shipping-table-body">
-                                <tr><td colspan="4" class="text-center text-muted py-4">กำลังโหลดข้อมูล...</td></tr>
-                            </tbody>
-                        </table>
+                
+                <div class="card-custom p-4 mb-4" style="background-color: var(--primary-light); border: 1px solid var(--primary-color);">
+                    <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-bar-chart-line me-2"></i>สรุปการจัดส่งวันนี้</h5>
+                    <div class="row" id="shipping-summary-boxes">
+                        <div class="col-12"><div class="text-center text-muted small py-3">กำลังคำนวณข้อมูล...</div></div>
                     </div>
                 </div>
+
+                <div class="card-custom overflow-hidden">
+                    <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-2 d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold m-0"><i class="bi bi-box-seam me-2 text-warning"></i>รายการที่ต้องจัดส่ง (ล่าสุด)</h5>
+                        <button class="btn btn-sm btn-light border shadow-sm" onclick="loadShippingData()"><i class="bi bi-arrow-clockwise"></i> รีเฟรช</button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle table-borderless mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4 py-3 text-center" style="width: 80px;">เวลา</th>
+                                        <th>รายการสินค้า / หมายเหตุ</th>
+                                        <th class="text-center">ขนส่ง</th>
+                                        <th class="text-center pe-4">ค่าส่ง</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="shipping-table-body">
+                                    <tr><td colspan="4" class="text-center text-muted py-5"><div class="spinner-border text-primary spinner-border-sm me-2"></div>กำลังโหลดข้อมูล...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -62,24 +78,61 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
         function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
 
-        window.onload = async function() {
+        window.onload = function() {
             if (!localStorage.getItem('inventory_user')) window.location.href = "index.html";
+            loadShippingData();
+        }
+
+        async function loadShippingData() {
+            document.getElementById('shipping-table-body').innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5"><div class="spinner-border text-primary spinner-border-sm me-2"></div>ดึงข้อมูลล่าสุด...</td></tr>';
             try {
                 let res = await fetch(API_URL, { method:'POST', headers: { 'Content-Type': 'text/plain' }, body:JSON.stringify({action:"getDashboard"}) });
                 let data = await res.json();
-                let html = '';
-                for(const [method, stat] of Object.entries(data.shipStats)) {
-                    html += `<tr>
-                        <td class="fw-bold text-dark">${method}</td>
-                        <td class="text-center">${stat.count} กล่อง</td>
-                        <td class="text-center text-danger fw-bold">฿${stat.cost.toLocaleString()}</td>
-                        <td class="text-end"><span class="badge bg-success bg-opacity-25 text-success px-3 py-2 rounded-pill">บันทึกแล้ว</span></td>
-                    </tr>`;
+                
+                // 1. วาดกล่องสรุปด้านบน
+                let summaryHtml = '';
+                if(Object.keys(data.shipStats).length === 0) {
+                    summaryHtml = `<div class="col-12"><div class="text-center text-secondary small py-2">ยังไม่มีรายการจัดส่งสำหรับวันนี้</div></div>`;
+                } else {
+                    for(const [method, stat] of Object.entries(data.shipStats)) {
+                        summaryHtml += `
+                        <div class="col-6 col-md-3 mb-2">
+                            <div class="bg-white p-3 rounded-4 shadow-sm text-center border">
+                                <h6 class="fw-bold text-dark mb-1">${method}</h6>
+                                <div class="fs-5 text-primary fw-bold">${stat.count} <span class="fs-6 fw-normal text-muted">กล่อง</span></div>
+                                <div class="small text-danger mt-1">฿${stat.cost.toLocaleString()}</div>
+                            </div>
+                        </div>`;
+                    }
                 }
-                if(html === '') html = '<tr><td colspan="4" class="text-center text-muted py-4">ยังไม่มีการจัดส่งวันนี้</td></tr>';
-                document.getElementById('shipping-table-body').innerHTML = html;
-            } catch(e) {}
+                document.getElementById('shipping-summary-boxes').innerHTML = summaryHtml;
+
+                // 2. วาดตารางรายการออเดอร์
+                let listHtml = '';
+                if(data.shippingOrdersList.length === 0) {
+                    listHtml = '<tr><td colspan="4" class="text-center text-muted py-5"><i class="bi bi-box fs-1 d-block mb-2 opacity-25"></i>ไม่มีออเดอร์ค้างส่ง</td></tr>';
+                } else {
+                    data.shippingOrdersList.forEach(order => {
+                        let remarkBadge = order.remark && order.remark !== "-" ? `<span class="badge bg-warning text-dark mt-1"><i class="bi bi-info-circle me-1"></i>${order.remark}</span>` : "";
+                        listHtml += `
+                        <tr class="border-bottom">
+                            <td class="ps-4 py-3 text-center"><span class="badge bg-light text-secondary border px-2 py-1">${order.time}</span></td>
+                            <td>
+                                <div class="fw-bold text-dark" style="font-size: 0.95rem;">${order.detail}</div>
+                                ${remarkBadge}
+                            </td>
+                            <td class="text-center"><span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill border border-primary border-opacity-25">${order.method}</span></td>
+                            <td class="text-center pe-4 fw-bold text-danger">฿${order.cost.toLocaleString()}</td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('shipping-table-body').innerHTML = listHtml;
+
+            } catch(e) {
+                document.getElementById('shipping-table-body').innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
+            }
         }
+        
         function logout() { localStorage.removeItem('inventory_user'); window.location.href = "index.html"; }
     </script>
 </body>
