@@ -8,11 +8,18 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ซ่อนลูกศรขึ้นลงในช่องกรอกตัวเลข เพื่อความมินิมอล */
+        .hide-arrows::-webkit-outer-spin-button,
+        .hide-arrows::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .hide-arrows { -moz-appearance: textfield; }
+    </style>
 </head>
 <body>
     <div class="d-flex" id="wrapper">
         <div id="mobile-overlay" onclick="toggleMenu()"></div>
 
+        <!-- Sidebar Menu -->
         <div id="sidebar-wrapper">
             <div class="sidebar-heading text-center py-4 fs-4 fw-bold border-bottom mb-2">
                 <i class="bi bi-box-seam me-2"></i>Bemind POS
@@ -35,6 +42,7 @@
             </div>
         </div>
 
+        <!-- Content -->
         <div id="page-content-wrapper" class="w-100">
             <nav class="navbar navbar-light py-3 px-4 mb-4 border-bottom bg-white sticky-top">
                 <div class="d-flex align-items-center w-100">
@@ -49,24 +57,26 @@
                 <div class="row justify-content-center">
                     <div class="col-xl-9 col-lg-11">
                         
+                        <!-- เลือกสินค้า -->
                         <div class="card-custom mb-4" style="background-color: var(--primary-light); border: 1px solid var(--primary-color);">
                             <div class="card-body p-4">
                                 <div class="row g-3 align-items-end">
                                     <div class="col-12 col-md-6">
                                         <label class="fw-bold small text-primary mb-1 ps-1">เลือกสินค้าลงตะกร้า</label>
-                                        <select id="pos-product" class="form-select form-select-lg"><option>กำลังโหลด...</option></select>
+                                        <select id="pos-product" class="form-select form-select-lg border-0 shadow-sm"><option>กำลังโหลด...</option></select>
                                     </div>
                                     <div class="col-6 col-md-3">
                                         <label class="fw-bold small text-primary mb-1 ps-1">ราคาขาย/ชิ้น</label>
-                                        <input type="number" id="pos-price" class="form-control form-control-lg" placeholder="฿">
+                                        <input type="number" id="pos-price" class="form-control form-control-lg border-0 shadow-sm" placeholder="฿">
                                     </div>
                                     <div class="col-6 col-md-3">
-                                        <button class="btn btn-pastel-primary btn-lg w-100 fw-bold" onclick="addToCart()"><i class="bi bi-plus-lg me-1"></i> เพิ่ม</button>
+                                        <button class="btn btn-pastel-primary btn-lg w-100 fw-bold shadow-sm" onclick="addToCart()"><i class="bi bi-plus-lg me-1"></i> เพิ่ม</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- ตะกร้าสินค้า -->
                         <div class="card-custom overflow-hidden">
                             <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-2">
                                 <h5 class="fw-bold m-0"><i class="bi bi-receipt me-2" style="color: var(--primary-color);"></i>ใบสั่งซื้อ / ตะกร้าสินค้า</h5>
@@ -86,34 +96,35 @@
                                             <tr><td colspan="4" class="text-center py-5 text-muted"><i class="bi bi-cart-x fs-1 d-block mb-2 opacity-50"></i>ยังไม่มีสินค้าในตะกร้า</td></tr>
                                         </tbody>
                                         
+                                        <!-- สรุปบิล -->
                                         <tfoot class="border-top" style="background-color: #fafbfc;">
                                             <tr>
                                                 <td colspan="2" class="ps-4 pt-4 pb-3 w-50">
-                                                    <div class="bg-white p-3 rounded-4 border">
+                                                    <div class="bg-white p-3 rounded-4 border shadow-sm">
                                                         <div class="row g-3">
                                                             <div class="col-6">
                                                                 <label class="small fw-bold text-muted mb-1">วันที่ทำรายการ</label>
-                                                                <input type="date" id="out-date" class="form-control form-control-sm">
+                                                                <input type="date" id="out-date" class="form-control form-control-sm border-0 bg-light">
                                                             </div>
                                                             <div class="col-6">
                                                                 <label class="small fw-bold text-muted mb-1">หมายเหตุ</label>
-                                                                <input type="text" id="out-remark" class="form-control form-control-sm" placeholder="ระบุ...">
+                                                                <input type="text" id="out-remark" class="form-control form-control-sm border-0 bg-light" placeholder="ระบุ...">
                                                             </div>
                                                             <div class="col-6">
                                                                 <label class="small fw-bold text-muted mb-1">ช่องทางขาย</label>
-                                                                <select id="out-channel" class="form-select form-select-sm"><option>ช่องทางขาย</option></select>
+                                                                <select id="out-channel" class="form-select form-select-sm border-0 bg-light"><option>ช่องทางขาย</option></select>
                                                             </div>
                                                             <div class="col-6">
                                                                 <label class="small fw-bold text-danger mb-1">โปรโมชั่น</label>
-                                                                <select id="out-promo" class="form-select form-select-sm border-danger text-danger" onchange="updateSummary()"><option value="">ไม่ใช้โปรโมชั่น</option></select>
+                                                                <select id="out-promo" class="form-select form-select-sm border-0 bg-light text-danger fw-bold" onchange="updateSummary()"><option value="">ไม่ใช้โปรโมชั่น</option></select>
                                                             </div>
                                                             <div class="col-6">
                                                                 <label class="small fw-bold text-muted mb-1">การจัดส่ง</label>
-                                                                <select id="out-shipping" class="form-select form-select-sm" onchange="updateSummary()"><option>ขนส่ง</option></select>
+                                                                <select id="out-shipping" class="form-select form-select-sm border-0 bg-light" onchange="updateSummary()"><option>ขนส่ง</option></select>
                                                             </div>
                                                             <div class="col-6">
                                                                 <label class="small fw-bold text-muted mb-1">ค่าขนส่ง</label>
-                                                                <input type="number" id="out-shipping-cost" class="form-control form-control-sm text-center" onchange="updateSummary()" value="0">
+                                                                <input type="number" id="out-shipping-cost" class="form-control form-control-sm border-0 bg-light text-center fw-bold" onchange="updateSummary()" value="0">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -137,13 +148,14 @@
                                                     <span class="fw-bold fs-3 text-primary d-block mt-1" id="sum-net">฿0</span>
                                                 </td>
                                             </tr>
-                                            <tr><td colspan="4" class="p-2 border-0"></td></tr> </tfoot>
+                                            <tr><td colspan="4" class="p-2 border-0"></td></tr> 
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>
                             <div class="p-4 bg-white border-top text-end rounded-bottom-4">
-                                <button class="btn btn-pastel-success btn-lg px-5 fw-bold" onclick="submitCart()">
-                                    <i class="bi bi-check2-circle me-2"></i> ยืนยันการขาย (ตัดสต๊อก)
+                                <button class="btn btn-pastel-success btn-lg px-5 fw-bold shadow-sm" onclick="showConfirmModal()">
+                                    <i class="bi bi-file-earmark-check me-2"></i> ตรวจสอบและยืนยันบิล
                                 </button>
                             </div>
                         </div>
@@ -154,9 +166,31 @@
         </div>
     </div>
 
+    <!-- 🟢 Modal Popup สำหรับยืนยันบิล -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0" style="background-color: var(--primary-light);">
+                    <h5 class="modal-title fw-bold text-primary" id="confirmModalLabel"><i class="bi bi-receipt-cutoff me-2"></i>สรุปรายละเอียดบิล</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" id="modal-body-content">
+                    <!-- ข้อมูลจะถูกสร้างจาก JavaScript และนำมาใส่ตรงนี้ -->
+                </div>
+                <div class="modal-footer border-0 bg-light rounded-bottom-4">
+                    <button type="button" class="btn btn-white fw-bold rounded-pill px-4 border" data-bs-dismiss="modal">ย้อนกลับแก้ไข</button>
+                    <button type="button" class="btn btn-pastel-success fw-bold rounded-pill px-4 shadow-sm" onclick="executeSubmitCart()" id="btn-final-confirm">
+                        <i class="bi bi-check2-circle me-1"></i> ยืนยันการตัดสต๊อก
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec";
         let productsList = [], shippingList = [], promoList = [], cart = [];
+        let currentModalInstance;
 
         function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
 
@@ -224,6 +258,17 @@
         function removeCart(index) { cart.splice(index, 1); updateSummary(); }
         function changeQty(index, amt) { cart[index].qty += amt; if(cart[index].qty <= 0) removeCart(index); else updateSummary(); }
 
+        // 🟢 ฟังก์ชันใหม่: อัปเดตจำนวนแบบพิมพ์ตัวเลขเอง
+        function updateQtyManual(index, value) {
+            let newQty = parseInt(value);
+            if (isNaN(newQty) || newQty <= 0) {
+                removeCart(index); // ถ้าพิมพ์ 0 หรือลบค่าทิ้ง ให้เอาของออกจากตะกร้าไปเลย
+            } else {
+                cart[index].qty = newQty;
+                updateSummary();
+            }
+        }
+
         let finalPromoItems = []; let finalDiscount = 0;
 
         function updateSummary() {
@@ -264,15 +309,22 @@
                     </td>
                     <td class="text-center d-none d-md-table-cell text-secondary">฿${item.price}</td>
                     <td class="text-center py-3">
-                        <div class="d-inline-flex align-items-center bg-white rounded-pill px-2 py-1 border shadow-sm">
-                            <i class="bi bi-dash-circle text-secondary fs-5 me-2" style="cursor:pointer;" onclick="changeQty(${idx}, -1)"></i>
-                            <span class="fw-bold px-1" style="min-width: 20px;">${item.qty}</span>
-                            <i class="bi bi-plus-circle-fill text-primary fs-5 ms-2" style="cursor:pointer;" onclick="changeQty(${idx}, 1)"></i>
+                        <div class="d-inline-flex align-items-center bg-white rounded-pill px-1 py-1 border shadow-sm">
+                            <i class="bi bi-dash-circle text-secondary fs-5 me-1" style="cursor:pointer;" onclick="changeQty(${idx}, -1)"></i>
+                            
+                            <!-- 🟢 ช่องพิมพ์ตัวเลขที่อัปเกรดแล้ว -->
+                            <input type="number" class="form-control form-control-sm border-0 text-center fw-bold px-1 bg-transparent hide-arrows" 
+                                style="width: 45px; font-size: 1rem; box-shadow: none;" 
+                                value="${item.qty}" 
+                                onchange="updateQtyManual(${idx}, this.value)" 
+                                onclick="this.select()">
+                            
+                            <i class="bi bi-plus-circle-fill text-primary fs-5 ms-1" style="cursor:pointer;" onclick="changeQty(${idx}, 1)"></i>
                         </div>
                     </td>
                     <td class="text-end pe-4 py-3 fw-bold text-dark">
-                        ฿${item.price * item.qty}
-                        <i class="bi bi-trash3 text-danger ms-3" style="cursor:pointer;" onclick="removeCart(${idx})"></i>
+                        ฿${(item.price * item.qty).toLocaleString()}
+                        <i class="bi bi-trash3 text-danger ms-3 opacity-75" style="cursor:pointer;" onclick="removeCart(${idx})"></i>
                     </td>
                 </tr>`;
             });
@@ -295,18 +347,74 @@
             document.getElementById('sum-net').innerText = `฿${netTotal.toLocaleString()}`;
         }
 
-        async function submitCart() {
-            if(cart.length === 0) return alert("ตะกร้าสินค้าว่างเปล่า");
+        // 🟢 ฟังก์ชันใหม่: โชว์ Popup สรุปรายการ
+        function showConfirmModal() {
+            if(cart.length === 0) return alert("ตะกร้าสินค้าว่างเปล่า ไม่สามารถสร้างบิลได้");
             
+            const transDate = document.getElementById('out-date').value;
+            const globalRemark = document.getElementById('out-remark').value || "-";
+            const channel = document.getElementById('out-channel').value;
+            const shipMethod = document.getElementById('out-shipping').value;
+            const shipCost = document.getElementById('out-shipping-cost').value;
+            const promoSelect = document.getElementById('out-promo');
+            const promoText = promoSelect.value ? promoSelect.options[promoSelect.selectedIndex].text : "ไม่ใช้โปรโมชั่น";
+
+            if(!transDate) return alert("กรุณาเลือกวันที่ทำรายการ");
+            if(!channel || !shipMethod || channel==="ช่องทางขาย" || shipMethod==="ขนส่ง") return alert("กรุณาเลือกช่องทางขายและขนส่งให้ครบถ้วน");
+
+            let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            let netTotal = subtotal - finalDiscount + Number(shipCost);
+
+            // สร้างรายละเอียด HTML อัดเข้าไปใน Modal
+            let detailsHtml = `
+                <div class="mb-3">
+                    <div class="row small text-muted mb-1"><div class="col-4">วันที่บิล:</div><div class="col-8 fw-bold text-dark text-end">${transDate}</div></div>
+                    <div class="row small text-muted mb-1"><div class="col-4">ช่องทาง:</div><div class="col-8 fw-bold text-dark text-end">${channel}</div></div>
+                    <div class="row small text-muted mb-1"><div class="col-4">การจัดส่ง:</div><div class="col-8 fw-bold text-dark text-end">${shipMethod} (฿${Number(shipCost).toLocaleString()})</div></div>
+                    <div class="row small text-muted mb-1"><div class="col-4">โปรโมชั่น:</div><div class="col-8 fw-bold text-danger text-end">${promoText}</div></div>
+                    <div class="row small text-muted"><div class="col-4">หมายเหตุ:</div><div class="col-8 fw-bold text-dark text-end text-truncate">${globalRemark}</div></div>
+                </div>
+                
+                <div class="fw-bold mb-2 small text-secondary">รายการสินค้าในบิล:</div>
+                <ul class="list-group list-group-flush mb-4 border rounded-3 overflow-hidden small shadow-sm">
+            `;
+
+            cart.forEach(item => {
+                detailsHtml += `<li class="list-group-item d-flex justify-content-between align-items-center bg-white border-bottom px-3 py-2">
+                    <div><span class="fw-bold text-dark">${item.name}</span> <span class="text-muted ms-1">x${item.qty}</span></div>
+                    <div class="fw-bold text-dark">฿${(item.price * item.qty).toLocaleString()}</div>
+                </li>`;
+            });
+
+            finalPromoItems.forEach(free => {
+                detailsHtml += `<li class="list-group-item d-flex justify-content-between align-items-center bg-danger bg-opacity-10 border-bottom px-3 py-2 text-danger">
+                    <div><i class="bi bi-gift me-1"></i> <span class="fw-bold">${free.name}</span> <span class="ms-1 opacity-75">x${free.qty}</span></div>
+                    <div class="fw-bold">ฟรี</div>
+                </li>`;
+            });
+
+            detailsHtml += `</ul>
+                <div class="d-flex justify-content-between align-items-center p-3 rounded-3" style="background-color: var(--primary-light); border: 1px solid var(--primary-color);">
+                    <span class="fw-bold text-primary">ยอดสุทธิที่ต้องตัดชำระ</span>
+                    <span class="fw-bold fs-3 text-primary">฿${netTotal.toLocaleString()}</span>
+                </div>
+            `;
+
+            document.getElementById('modal-body-content').innerHTML = detailsHtml;
+
+            // เรียกให้ Popup เด้งขึ้นมา
+            currentModalInstance = new bootstrap.Modal(document.getElementById('confirmModal'));
+            currentModalInstance.show();
+        }
+
+        // 🟢 ฟังก์ชันยืนยันบิล (กดจากใน Popup)
+        async function executeSubmitCart() {
             const transDate = document.getElementById('out-date').value;
             const globalRemark = document.getElementById('out-remark').value;
             const channel = document.getElementById('out-channel').value;
             const shipMethod = document.getElementById('out-shipping').value;
             const shipCost = document.getElementById('out-shipping-cost').value;
             const user = localStorage.getItem('inventory_user') || 'Admin';
-
-            if(!transDate) return alert("กรุณาเลือกวันที่ทำรายการ");
-            if(!channel || !shipMethod || channel==="ช่องทางขาย" || shipMethod==="ขนส่ง") return alert("เลือกช่องทางและขนส่งให้ครบถ้วน");
 
             let finalPayloadCart = [];
             let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
@@ -317,8 +425,8 @@
             });
             finalPromoItems.forEach(free => finalPayloadCart.push(free));
 
-            const btn = document.querySelector('.btn-pastel-success');
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> กำลังบันทึก...';
+            const btn = document.getElementById('btn-final-confirm');
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> กำลังบันทึกข้อมูล...';
             btn.disabled = true;
 
             try {
@@ -327,6 +435,10 @@
                     body: JSON.stringify({ action: "saveCartTransaction", user, cart: finalPayloadCart, channel, shipMethod, shipCost, netTotal: (subtotal - finalDiscount + Number(shipCost)), date: transDate, globalRemark: globalRemark })
                 });
                 const res = await response.json();
+                
+                // ปิด Popup
+                currentModalInstance.hide();
+                
                 alert(res.message);
                 if(res.success) {
                     cart = [];
@@ -337,11 +449,16 @@
                     document.getElementById('out-remark').value = '';
                     
                     updateSummary();
-                    localStorage.removeItem('pos_init_data');
+                    localStorage.removeItem('pos_init_data'); // ล้างแคชเพื่อให้ดึงสต๊อกใหม่
                     await loadData();
                 }
-            } catch (error) { alert("เกิดข้อผิดพลาดในการเชื่อมต่อ"); }
-            btn.innerHTML = '<i class="bi bi-check2-circle me-2"></i> บันทึกใบสั่งซื้อ'; btn.disabled = false;
+            } catch (error) { 
+                currentModalInstance.hide();
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองอีกครั้ง"); 
+            }
+            
+            btn.innerHTML = '<i class="bi bi-check2-circle me-1"></i> ยืนยันการตัดสต๊อก'; 
+            btn.disabled = false;
         }
 
         function logout() { localStorage.removeItem('inventory_user'); window.location.href = "index.html"; }
