@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* 🟢 CSS สำหรับตกแต่งปฏิทินโดยเฉพาะ */
+        /* CSS สำหรับตกแต่งปฏิทิน */
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -64,12 +64,25 @@
             width: 100%;
             text-align: center;
         }
+        
+        /* 🟢 CSS สำหรับปุ่มเลือกเดือน */
+        .calendar-title-btn {
+            cursor: pointer;
+            padding: 8px 20px;
+            border-radius: 50px;
+            transition: background-color 0.2s ease;
+            user-select: none;
+        }
+        .calendar-title-btn:hover {
+            background-color: var(--primary-light);
+        }
     </style>
 </head>
 <body>
     <div class="d-flex" id="wrapper">
         <div id="mobile-overlay" onclick="toggleMenu()"></div>
         
+        <!-- เมนูด้านซ้าย -->
         <div id="sidebar-wrapper">
             <div class="sidebar-heading text-center py-4 fs-5 fw-bold border-bottom mb-2 d-flex align-items-center justify-content-center">
                 <img src="logo.jpg" alt="Bemind Logo" style="width: 42px; height: 42px; border-radius: 10px; object-fit: cover;" class="me-2 shadow-sm">
@@ -113,7 +126,13 @@
                         <button class="btn btn-light border shadow-sm rounded-pill px-3" onclick="changeMonth(-1)" style="color: var(--brand-pink);">
                             <i class="bi bi-chevron-left me-1"></i> เดือนก่อน
                         </button>
-                        <h4 class="fw-bold m-0" style="color: var(--brand-teal);" id="calendar-title">กำลังโหลด...</h4>
+                        
+                        <!-- 🟢 เปลี่ยนจากตัวหนังสือธรรมดา เป็นปุ่มกดเปิด Modal เลือกเดือน -->
+                        <div class="calendar-title-btn d-flex align-items-center" onclick="openMonthPicker()">
+                            <h4 class="fw-bold m-0 d-inline-block" style="color: var(--brand-teal);" id="calendar-title">กำลังโหลด...</h4>
+                            <i class="bi bi-caret-down-fill ms-2" style="color: var(--brand-teal);"></i>
+                        </div>
+                        
                         <button class="btn btn-light border shadow-sm rounded-pill px-3" onclick="changeMonth(1)" style="color: var(--brand-pink);">
                             ถัดไป <i class="bi bi-chevron-right ms-1"></i>
                         </button>
@@ -153,6 +172,7 @@
         </div>
     </div>
 
+    <!-- Modal: ดูรายละเอียดประจำวัน -->
     <div class="modal fade" id="dailyDetailModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
             <div class="modal-content border-0 rounded-4 shadow-lg">
@@ -181,25 +201,67 @@
         </div>
     </div>
 
+    <!-- 🟢 Modal: สำหรับเลือกเดือนและปี (Month/Year Picker) -->
+    <div class="modal fade" id="monthPickerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 bg-light">
+                    <h5 class="modal-title fw-bold text-dark"><i class="bi bi-calendar-event me-2" style="color: var(--brand-teal);"></i>ไปยังเดือน...</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">เดือน</label>
+                        <select id="select-month" class="form-select border-0 bg-light shadow-sm" style="border-radius: 12px;">
+                            <option value="0">มกราคม</option>
+                            <option value="1">กุมภาพันธ์</option>
+                            <option value="2">มีนาคม</option>
+                            <option value="3">เมษายน</option>
+                            <option value="4">พฤษภาคม</option>
+                            <option value="5">มิถุนายน</option>
+                            <option value="6">กรกฎาคม</option>
+                            <option value="7">สิงหาคม</option>
+                            <option value="8">กันยายน</option>
+                            <option value="9">ตุลาคม</option>
+                            <option value="10">พฤศจิกายน</option>
+                            <option value="11">ธันวาคม</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-muted">ปี (พ.ศ.)</label>
+                        <select id="select-year" class="form-select border-0 bg-light shadow-sm" style="border-radius: 12px;">
+                            <!-- ตัวเลือกปีจะถูกสร้างด้วย Javascript (ดึงปีปัจจุบันย้อนหลังไปให้เลือก) -->
+                        </select>
+                    </div>
+                    <button class="btn w-100 fw-bold shadow-sm py-2" style="background-color: var(--brand-teal); color: #fff; border-radius: 12px;" onclick="applyMonthPicker()">เปิดดูปฏิทิน</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
         
-        let globalReportData = []; // เก็บข้อมูลที่โหลดมาทั้งหมด
-        let reportDataMap = {};    // แปลงข้อมูลเป็น { '2026-04-20': { index: 0, sales: 1500 } } เพื่อง่ายต่อการใช้วาดปฏิทิน
+        let globalReportData = []; 
+        let reportDataMap = {};    
         
-        // ตัวแปรสำหรับปฏิทิน
         let currentDisplayDate = new Date(); 
         const monthNames = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
         const dayNames = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสฯ", "ศุกร์", "เสาร์"];
+
+        let monthModal; // ตัวแปรสำหรับเรียกใช้งาน Modal เลือกเดือน
 
         function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
 
         window.onload = function() {
             if (!localStorage.getItem('inventory_user')) window.location.href = "index.html";
+            
+            // เตรียม Modal ไว้ล่วงหน้า
+            monthModal = new bootstrap.Modal(document.getElementById('monthPickerModal'));
+            
             loadFinancialData();
         }
 
-        // --- 1. ดึงข้อมูลจาก Google Sheets ---
         async function loadFinancialData() {
             document.getElementById('finance-table-body').innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5"><div class="spinner-border spinner-border-sm text-primary me-2"></div>กำลังโหลดข้อมูล...</td></tr>';
             try {
@@ -208,59 +270,89 @@
                 
                 if (result.success) {
                     globalReportData = result.data;
-                    
-                    // แปลงข้อมูลให้อยู่ในรูปแบบ Map เพื่อให้ปฏิทินดึงไปใช้ง่ายๆ
                     reportDataMap = {};
                     globalReportData.forEach((dayData, index) => {
                         reportDataMap[dayData.dateKey] = { ...dayData, originalIndex: index };
                     });
 
                     renderTable();
-                    renderCalendar(); // วาดปฏิทิน
+                    renderCalendar(); 
                 }
             } catch (e) {
                 document.getElementById('finance-table-body').innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
             }
         }
 
-        // --- 2. วาดปฏิทินอัจฉริยะ ---
+        // --- 🟢 ฟังก์ชันเปิด Modal เลือกเดือน ---
+        function openMonthPicker() {
+            let currentMonth = currentDisplayDate.getMonth();
+            let currentYear = currentDisplayDate.getFullYear();
+            
+            // สร้างตัวเลือกปีให้ครอบคลุมปีปัจจุบัน (เช่น ปัจจุบัน 2569 ก็จะให้ย้อนไปถึง 2566)
+            let yearSelect = document.getElementById('select-year');
+            yearSelect.innerHTML = '';
+            
+            let todayYear = new Date().getFullYear();
+            for(let y = todayYear - 3; y <= todayYear + 1; y++) {
+                let option = document.createElement('option');
+                option.value = y;
+                option.text = y + 543; // แปลง ค.ศ. เป็น พ.ศ.
+                if(y === currentYear) option.selected = true;
+                yearSelect.appendChild(option);
+            }
+            
+            // เซ็ตค่าเดือนปัจจุบันใน Dropdown
+            document.getElementById('select-month').value = currentMonth;
+            
+            // สั่งโชว์หน้าต่าง
+            monthModal.show();
+        }
+
+        // --- 🟢 ฟังก์ชันหลังจากกดยืนยันเลือกเดือนใน Modal ---
+        function applyMonthPicker() {
+            let selectedMonth = parseInt(document.getElementById('select-month').value);
+            let selectedYear = parseInt(document.getElementById('select-year').value);
+            
+            // อัปเดตเวลาอ้างอิงให้เป็นวันที่ 1 ของเดือนและปีที่เลือก
+            currentDisplayDate = new Date(selectedYear, selectedMonth, 1);
+            
+            // วาดปฏิทินใหม่
+            renderCalendar();
+            
+            // ปิด Modal
+            monthModal.hide();
+        }
+
         function renderCalendar() {
             let year = currentDisplayDate.getFullYear();
-            let month = currentDisplayDate.getMonth(); // 0-11
+            let month = currentDisplayDate.getMonth(); 
             
-            // อัปเดตชื่อเดือนด้านบน (แปลงปี ค.ศ. เป็น พ.ศ.)
             document.getElementById('calendar-title').innerText = `${monthNames[month]} ${year + 543}`;
 
-            // หาวันแรกของเดือน และจำนวนวันทั้งหมดในเดือน
-            let firstDay = new Date(year, month, 1).getDay(); // 0 (Sun) - 6 (Sat)
+            let firstDay = new Date(year, month, 1).getDay(); 
             let daysInMonth = new Date(year, month + 1, 0).getDate();
 
             let html = '<div class="calendar-grid">';
             
-            // วาดหัวตารางวัน (อาทิตย์ - เสาร์)
             dayNames.forEach(day => {
                 html += `<div class="calendar-header">${day}</div>`;
             });
 
-            // วาดช่องว่างสำหรับวันก่อนเริ่มต้นเดือน
             for (let i = 0; i < firstDay; i++) {
                 html += `<div class="calendar-cell border-0 bg-transparent"></div>`;
             }
 
-            // วาดช่องวันที่
             for (let d = 1; d <= daysInMonth; d++) {
-                // สร้าง Key วันที่ เช่น "2026-04-05" (ต้องเติมเลข 0 ให้ครบ)
                 let dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                
-                let dayData = reportDataMap[dateStr]; // เช็คว่าวันนี้มีข้อมูลไหม
+                let dayData = reportDataMap[dateStr]; 
 
                 let classes = "calendar-cell";
                 let onclick = "";
                 let salesElement = "";
 
                 if (dayData && (dayData.totalSales > 0 || dayData.totalIn > 0)) {
-                    classes += " has-data shadow-sm"; // ถ้ามีข้อมูลให้ช่องสว่างขึ้น
-                    onclick = `onclick="openDetailModal(${dayData.originalIndex})"`; // ใส่คำสั่งคลิกเปิด Modal
+                    classes += " has-data shadow-sm"; 
+                    onclick = `onclick="openDetailModal(${dayData.originalIndex})"`; 
                     
                     if (dayData.totalSales > 0) {
                         salesElement = `<div class="calendar-sales">฿${dayData.totalSales.toLocaleString()}</div>`;
@@ -281,13 +373,11 @@
             document.getElementById('calendar-wrapper').innerHTML = html;
         }
 
-        // --- 3. ฟังก์ชันเปลี่ยนเดือนปฏิทิน ---
         function changeMonth(direction) {
             currentDisplayDate.setMonth(currentDisplayDate.getMonth() + direction);
             renderCalendar();
         }
 
-        // --- 4. วาดตารางรายการย้อนหลังด้านล่าง ---
         function renderTable() {
             let html = '';
             if (globalReportData.length === 0) {
@@ -310,7 +400,6 @@
             document.getElementById('finance-table-body').innerHTML = html;
         }
 
-        // --- 5. เปิด Modal รายละเอียด ---
         function openDetailModal(index) {
             let dayData = globalReportData[index];
             document.getElementById('modal-date-title').innerHTML = `<i class="bi bi-receipt me-2"></i>รายละเอียดวันที่ ${dayData.displayDate}`;
