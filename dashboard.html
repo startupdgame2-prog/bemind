@@ -14,6 +14,7 @@
     <div class="d-flex" id="wrapper">
         <div id="mobile-overlay" onclick="toggleMenu()"></div>
         
+        <!-- เมนูด้านซ้าย (Sidebar) -->
         <div id="sidebar-wrapper">
             <div class="sidebar-heading text-center py-4 fs-5 fw-bold border-bottom mb-2 d-flex align-items-center justify-content-center">
                 <img src="logo.jpg" alt="Bemind Logo" style="width: 42px; height: 42px; border-radius: 10px; object-fit: cover;" class="me-2 shadow-sm">
@@ -21,17 +22,17 @@
             </div>
             
             <div class="list-group list-group-flush">
+                <!-- เมนูภาพรวมระบบ -->
                 <a href="#dashboardSubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center active fw-bold">
                     <span><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</span><i class="bi bi-chevron-down small"></i>
                 </a>
                 <div class="collapse show" id="dashboardSubmenu">
-    <a href="dashboard.html" class="list-group-item list-group-item-action ps-5 fw-bold" style="color: var(--brand-teal);"><i class="bi bi-house-door me-2"></i> แดชบอร์ดหลัก</a>
-    
-    <a href="analytics.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-pie-chart me-2"></i> วิเคราะห์ยอดขาย (SKU/ช่องทาง)</a>
-    
-    <a href="finance.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-journal-text me-2"></i> สรุปรับ-จ่าย (ย้อนหลัง)</a>
-</div>
+                    <a href="dashboard.html" class="list-group-item list-group-item-action ps-5 fw-bold" style="color: var(--brand-teal);"><i class="bi bi-house-door me-2"></i> แดชบอร์ดหลัก</a>
+                    <a href="analytics.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-pie-chart me-2"></i> วิเคราะห์ยอดขาย (Analytics)</a>
+                    <a href="finance.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-journal-text me-2"></i> สรุปรับ-จ่าย (ย้อนหลัง)</a>
+                </div>
 
+                <!-- เมนูจัดการสต๊อก -->
                 <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                     <span><i class="bi bi-box-seam me-2"></i> จัดการสต๊อก</span><i class="bi bi-chevron-down small"></i>
                 </a>
@@ -46,6 +47,7 @@
             </div>
         </div>
 
+        <!-- พื้นที่เนื้อหาหลัก -->
         <div id="page-content-wrapper" class="w-100">
             <nav class="navbar navbar-light py-3 px-4 mb-4 border-bottom bg-white sticky-top">
                 <div class="d-flex align-items-center w-100">
@@ -56,6 +58,7 @@
 
             <div class="container-fluid px-3 px-md-4 pb-5">
                 
+                <!-- กล่องตัวเลข 6 กล่อง -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-lg-4 col-xl-2">
                         <div class="card-custom p-3 h-100 border-start border-4 shadow-sm" style="border-color: var(--brand-teal) !important; background-color: var(--primary-light);">
@@ -73,7 +76,7 @@
                         <div class="card-custom p-3 h-100 bg-white shadow-sm border position-relative">
                             <p class="text-muted mb-1 small fw-bold">ยอดขายวันนี้</p>
                             <h5 class="text-dark fw-bold mb-0" id="today-sales">฿0</h5>
-                            <button class="btn btn-sm btn-light border p-1 px-2 mt-1 text-secondary w-100" style="font-size: 0.65rem;" onclick="openChannelModal()"><i class="bi bi-list-ul"></i> ดูช่องทาง</button>
+                            <button class="btn btn-sm btn-light border p-1 px-2 mt-1 text-secondary w-100" style="font-size: 0.65rem;" onclick="openChannelModal()">ดูช่องทาง</button>
                         </div>
                     </div>
                     <div class="col-6 col-lg-4 col-xl-2 text-center">
@@ -92,15 +95,16 @@
                         <div class="card-custom p-3 h-100 bg-white shadow-sm border position-relative d-flex flex-column justify-content-center">
                             <p class="text-secondary mb-1 small fw-bold">สินค้าในสต๊อก</p>
                             <h5 class="text-primary fw-bold mb-0 text-truncate" id="total-stock">0 ชิ้น</h5>
-                            <button class="btn btn-sm btn-light border p-1 px-2 mt-1 text-secondary w-100" style="font-size: 0.65rem;" onclick="openStockListModal()"><i class="bi bi-box"></i> ดูทั้งหมด</button>
+                            <button class="btn btn-sm btn-light border p-1 px-2 mt-1 text-secondary w-100" style="font-size: 0.65rem;" onclick="openStockListModal()">ดูทั้งหมด</button>
                         </div>
                     </div>
                 </div>
 
+                <!-- กราฟเส้น และ กราฟโดนัท -->
                 <div class="row g-4 mb-4">
                     <div class="col-xl-8">
                         <div class="card-custom p-4 h-100 bg-white shadow-sm border">
-                            <h6 class="fw-bold text-secondary mb-4"><i class="bi bi-graph-up me-2" style="color: var(--brand-teal);"></i>กราฟเส้นแสดงยอดขาย (60 วันย้อนหลัง)</h6>
+                            <h6 class="fw-bold text-secondary mb-4"><i class="bi bi-graph-up me-2" style="color: var(--brand-teal);"></i>กราฟแสดงยอดขาย (60 วันย้อนหลัง)</h6>
                             <div style="height: 300px; width: 100%;">
                                 <canvas id="salesLineChart"></canvas>
                             </div>
@@ -117,11 +121,12 @@
                     </div>
                 </div>
 
+                <!-- ตารางรายการล่าสุด และ สินค้าใกล้หมด -->
                 <div class="row g-4">
                     <div class="col-xl-8">
                         <div class="card-custom overflow-hidden bg-white shadow-sm border h-100">
                             <div class="card-header bg-white border-0 pt-4 px-4">
-                                <h6 class="fw-bold text-secondary m-0"><i class="bi bi-clock-history me-2 text-info"></i>รายการขายล่าสุด (15 บิล)</h6>
+                                <h6 class="fw-bold m-0 text-info"><i class="bi bi-clock-history me-2"></i>รายการขายล่าสุด (15 บิล)</h6>
                             </div>
                             <div class="card-body p-0 mt-2">
                                 <div class="table-responsive" style="max-height: 350px; overflow-y: auto;">
@@ -147,13 +152,16 @@
                     <div class="col-xl-4">
                         <div class="card-custom overflow-hidden bg-white shadow-sm border h-100">
                             <div class="card-header bg-white border-0 pt-4 px-4">
-                                <h6 class="fw-bold text-secondary m-0"><i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>แจ้งเตือนสินค้าใกล้หมดสต๊อก</h6>
+                                <h6 class="fw-bold m-0 text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>แจ้งเตือนสินค้าใกล้หมด</h6>
                             </div>
                             <div class="card-body p-0 mt-2">
                                 <div class="table-responsive" style="max-height: 350px; overflow-y: auto;">
                                     <table class="table table-hover align-middle mb-0 small">
                                         <thead class="table-light sticky-top">
-                                            <tr><th class="ps-4">รายการสินค้า</th><th class="text-end pe-4">คงเหลือ</th></tr>
+                                            <tr>
+                                                <th class="ps-4">รายการสินค้า</th>
+                                                <th class="text-end pe-4">คงเหลือ</th>
+                                            </tr>
                                         </thead>
                                         <tbody id="low-stock-body">
                                             <tr><td colspan="2" class="text-center text-muted py-5">กำลังตรวจสอบ...</td></tr>
@@ -169,6 +177,11 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- Modal ต่างๆ (Popups) -->
+    <!-- ========================================== -->
+
+    <!-- Modal: ดูช่องทางวันนี้ -->
     <div class="modal fade" id="channelModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content border-0 rounded-4 shadow-lg">
@@ -188,6 +201,7 @@
         </div>
     </div>
 
+    <!-- Modal: ดูสินค้าขายดี -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content border-0 rounded-4 shadow-lg">
@@ -207,6 +221,7 @@
         </div>
     </div>
 
+    <!-- Modal: ดูสต๊อกทั้งหมด -->
     <div class="modal fade" id="stockListModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
             <div class="modal-content border-0 rounded-4 shadow-lg">
@@ -230,17 +245,26 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- Javascript -->
+    <!-- ========================================== -->
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
+        
         let globalDashData = null; 
 
-        function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
+        function toggleMenu() { 
+            document.getElementById("wrapper").classList.toggle("toggled"); 
+        }
 
         const chartColors = ['#FA6BBA', '#149E9A', '#fcd47b', '#b8a1e6', '#90e0ef', '#ffb5a7'];
 
         window.onload = async function() {
             const currentUser = localStorage.getItem('inventory_user');
-            if (!currentUser) { window.location.href = "index.html"; return; }
+            if (!currentUser) { 
+                window.location.href = "index.html"; 
+                return; 
+            }
             document.getElementById('user-display').innerText = `(${currentUser})`;
 
             try {
@@ -249,20 +273,19 @@
                     headers: { 'Content-Type': 'text/plain' }, 
                     body: JSON.stringify({ action: "getDashboard" }) 
                 });
-                const data = await response.json();
                 
+                const data = await response.json();
                 globalDashData = data; 
 
-                // อัปเดตกล่องตัวเลขทั้งหมด 6 กล่อง
+                // เติมข้อมูลลงในกล่อง
                 document.getElementById('all-sales').innerText = "฿" + (data.allTimeSales || 0).toLocaleString();
                 document.getElementById('all-profit').innerText = "฿" + (data.allTimeProfit || 0).toLocaleString();
                 document.getElementById('inv-value').innerText = "฿" + (data.invValue || 0).toLocaleString();
                 document.getElementById('today-sales').innerText = "฿" + (data.todaySales || 0).toLocaleString();
                 document.getElementById('today-profit').innerText = "฿" + (data.todayProfit || 0).toLocaleString();
-                
-                // 🟢 โชว์จำนวนชิ้นสต๊อกรวม
                 document.getElementById('total-stock').innerText = (data.totalStockQty || 0).toLocaleString() + " ชิ้น";
 
+                // วาดกราฟและตาราง
                 renderLineChart(data.salesChartData);
                 renderDoughnutChart(data.productChartData);
                 renderRecentSales(data.recentSales);
@@ -274,7 +297,44 @@
             }
         }
 
-        // --- เปิด Modal สต๊อกทั้งหมด ---
+        function openChannelModal() {
+            if(!globalDashData) return;
+            let html = '';
+            let sortedChannels = Object.entries(globalDashData.channelSales).sort((a,b) => b[1] - a[1]);
+            
+            if(sortedChannels.length === 0) {
+                html = '<tr><td colspan="2" class="text-center text-muted py-5">ยังไม่มียอดขายวันนี้</td></tr>';
+            } else {
+                sortedChannels.forEach(([ch, amt]) => {
+                    html += `<tr>
+                        <td class="ps-4 fw-bold text-dark">${ch}</td>
+                        <td class="text-end pe-4 text-success fw-bold">฿${amt.toLocaleString()}</td>
+                    </tr>`;
+                });
+            }
+            document.getElementById('channel-modal-body').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('channelModal')).show();
+        }
+
+        function openProductModal() {
+            if(!globalDashData) return;
+            let html = '';
+            let sortedProds = Object.entries(globalDashData.productChartData).sort((a,b) => b[1] - a[1]);
+            
+            if(sortedProds.length === 0) {
+                html = '<tr><td colspan="2" class="text-center text-muted py-5">ยังไม่มีประวัติการขายสินค้า</td></tr>';
+            } else {
+                sortedProds.forEach(([name, qty]) => {
+                    html += `<tr>
+                        <td class="ps-4 fw-bold text-dark text-truncate" style="max-width:250px;">${name}</td>
+                        <td class="text-end pe-4 text-primary fw-bold">${qty.toLocaleString()} ชิ้น</td>
+                    </tr>`;
+                });
+            }
+            document.getElementById('product-modal-body').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('productModal')).show();
+        }
+
         function openStockListModal() {
             if(!globalDashData || !globalDashData.allStockList) return;
             let html = '';
@@ -295,46 +355,19 @@
             new bootstrap.Modal(document.getElementById('stockListModal')).show();
         }
 
-        function openChannelModal() {
-            if(!globalDashData) return;
-            let html = '';
-            let sortedChannels = Object.entries(globalDashData.channelSales).sort((a,b) => b[1] - a[1]);
-            
-            if(sortedChannels.length === 0) {
-                html = '<tr><td colspan="2" class="text-center text-muted py-5">ยังไม่มียอดขายวันนี้</td></tr>';
-            } else {
-                sortedChannels.forEach(([ch, amt]) => {
-                    html += `<tr><td class="ps-4 fw-bold text-dark">${ch}</td><td class="text-end pe-4 text-success fw-bold">฿${amt.toLocaleString()}</td></tr>`;
-                });
-            }
-            document.getElementById('channel-modal-body').innerHTML = html;
-            new bootstrap.Modal(document.getElementById('channelModal')).show();
-        }
-
-        function openProductModal() {
-            if(!globalDashData) return;
-            let html = '';
-            let sortedProds = Object.entries(globalDashData.productChartData).sort((a,b) => b[1] - a[1]);
-            
-            if(sortedProds.length === 0) {
-                html = '<tr><td colspan="2" class="text-center text-muted py-5">ยังไม่มีประวัติการขายสินค้า</td></tr>';
-            } else {
-                sortedProds.forEach(([name, qty]) => {
-                    html += `<tr><td class="ps-4 fw-bold text-dark text-truncate" style="max-width:250px;">${name}</td><td class="text-end pe-4 text-primary fw-bold">${qty.toLocaleString()} ชิ้น</td></tr>`;
-                });
-            }
-            document.getElementById('product-modal-body').innerHTML = html;
-            new bootstrap.Modal(document.getElementById('productModal')).show();
-        }
-
-        // 🟢 อัปเกรดกราฟให้เป็นเส้นโค้งสมูทสวยงาม (Smooth Line Chart)
         function renderLineChart(salesData) {
             const ctx = document.getElementById('salesLineChart').getContext('2d');
             let dates = Object.keys(salesData).sort();
-            if(dates.length > 60) dates = dates.slice(dates.length - 60);
+            
+            if(dates.length > 60) {
+                dates = dates.slice(dates.length - 60);
+            }
             
             let values = dates.map(d => salesData[d]);
-            let labels = dates.map(d => { let parts = d.split('-'); return `${parts[2]}/${parts[1]}`; });
+            let labels = dates.map(d => { 
+                let parts = d.split('-'); 
+                return `${parts[2]}/${parts[1]}`; 
+            });
 
             new Chart(ctx, {
                 type: 'line',
@@ -345,13 +378,13 @@
                         data: values,
                         borderColor: '#149E9A',
                         backgroundColor: 'rgba(20, 158, 154, 0.1)',
-                        borderWidth: 3, // เส้นหนาขึ้น
+                        borderWidth: 3, 
                         pointBackgroundColor: '#ffffff',
                         pointBorderColor: '#149E9A',
-                        pointRadius: 4, // จุดวงกลมชัดขึ้น
+                        pointRadius: 4, 
                         pointHoverRadius: 6,
                         fill: true,
-                        tension: 0.4 // 🟢 เส้นโค้ง Smooth โค้งมนสวยงาม
+                        tension: 0.4 
                     }]
                 },
                 options: {
@@ -371,35 +404,49 @@
 
         function renderDoughnutChart(productData) {
             const ctx = document.getElementById('productDoughnutChart').getContext('2d');
+            
             let sortable = [];
-            for (let p in productData) sortable.push([p, productData[p]]);
+            for (let p in productData) {
+                sortable.push([p, productData[p]]);
+            }
             sortable.sort((a, b) => b[1] - a[1]);
+            
             let top5 = sortable.slice(0, 5);
-
             let labels = top5.map(item => item[0]);
             let values = top5.map(item => item[1]);
 
-            if(labels.length === 0) { labels = ["ยังไม่มีข้อมูล"]; values = [1]; }
+            if(labels.length === 0) { 
+                labels = ["ยังไม่มีข้อมูล"]; 
+                values = [1]; 
+            }
 
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: labels,
-                    datasets: [{ data: values, backgroundColor: chartColors, borderWidth: 2, borderColor: '#fff' }]
+                    datasets: [{ 
+                        data: values, 
+                        backgroundColor: chartColors, 
+                        borderWidth: 2, 
+                        borderColor: '#fff' 
+                    }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     cutout: '65%',
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Prompt' } } } }
+                    plugins: { 
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Prompt' } } } 
+                    }
                 }
             });
         }
 
         function renderRecentSales(sales) {
             let html = '';
-            if(sales.length === 0) { html = '<tr><td colspan="5" class="text-center text-muted py-4">ยังไม่มีประวัติการขาย</td></tr>'; } 
-            else {
+            if(sales.length === 0) { 
+                html = '<tr><td colspan="5" class="text-center text-muted py-4">ยังไม่มีประวัติการขาย</td></tr>'; 
+            } else {
                 sales.forEach(s => {
                     html += `<tr>
                         <td class="ps-4 text-muted">${s.time}</td>
@@ -415,8 +462,9 @@
 
         function renderLowStock(items) {
             let html = '';
-            if(items.length === 0) { html = '<tr><td colspan="2" class="text-center text-success py-4"><i class="bi bi-check-circle me-2"></i>สต๊อกสินค้าปกติทั้งหมด</td></tr>'; } 
-            else {
+            if(items.length === 0) { 
+                html = '<tr><td colspan="2" class="text-center text-success py-4"><i class="bi bi-check-circle me-2"></i>สต๊อกสินค้าปกติทั้งหมด</td></tr>'; 
+            } else {
                 items.forEach(item => {
                     let badgeClass = item.bal <= 3 ? 'bg-danger' : 'bg-warning text-dark';
                     html += `<tr>
@@ -428,7 +476,10 @@
             document.getElementById('low-stock-body').innerHTML = html;
         }
 
-        function logout() { localStorage.removeItem('inventory_user'); window.location.href = "index.html"; }
+        function logout() { 
+            localStorage.removeItem('inventory_user'); 
+            window.location.href = "index.html"; 
+        }
     </script>
 </body>
 </html>
