@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>สรุปรับ-จ่าย | Bemind POS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <div id="mobile-overlay" onclick="toggleMenu()"></div>
+        
+        <!-- เมนูด้านซ้าย -->
+        <div id="sidebar-wrapper">
+            <div class="sidebar-heading text-center py-4 fs-5 fw-bold border-bottom mb-2 d-flex align-items-center justify-content-center">
+                <img src="logo.jpg" alt="Bemind Logo" style="width: 42px; height: 42px; border-radius: 10px; object-fit: cover;" class="me-2 shadow-sm">
+                <span style="color: var(--brand-teal); font-weight: 800; letter-spacing: 0.5px;">Bemind POS</span>
+            </div>
+            
+            <div class="list-group list-group-flush">
+                <!-- 🟢 เมนูแดชบอร์ดแบบ Dropdown ใหม่ -->
+                <a href="#dashboardSubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center active fw-bold">
+                    <span><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</span><i class="bi bi-chevron-down small"></i>
+                </a>
+                <div class="collapse show" id="dashboardSubmenu">
+                    <a href="dashboard.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-house-door me-2"></i> แดชบอร์ดหลัก</a>
+                    <a href="finance.html" class="list-group-item list-group-item-action ps-5 fw-bold" style="color: var(--brand-teal);"><i class="bi bi-journal-text me-2"></i> สรุปรับ-จ่าย (ย้อนหลัง)</a>
+                </div>
+
+                <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-box-seam me-2"></i> จัดการสต๊อก</span><i class="bi bi-chevron-down small"></i>
+                </a>
+                <div class="collapse" id="inventorySubmenu">
+                    <a href="receive.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-box-arrow-in-down me-2"></i> รับเข้า (IN)</a>
+                    <a href="issue.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-cart3 me-2"></i> จุดขายสินค้า (POS)</a>
+                </div>
+                <a href="shipping.html" class="list-group-item list-group-item-action"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
+                <a href="manage.html" class="list-group-item list-group-item-action"><i class="bi bi-gear me-2"></i> จัดการสินค้า</a>
+                <a href="#" onclick="logout()" class="list-group-item list-group-item-action text-danger mt-4"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
+            </div>
+        </div>
+
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-light py-3 px-4 mb-4 border-bottom bg-white sticky-top">
+                <div class="d-flex align-items-center w-100">
+                    <button class="btn btn-light d-md-none me-3 rounded-circle border-0" onclick="toggleMenu()"><i class="bi bi-list fs-4"></i></button>
+                    <h5 class="m-0 fw-bold text-secondary">สรุปรับ-จ่ายรายวัน (ย้อนหลัง 3 เดือน)</h5>
+                </div>
+            </nav>
+
+            <div class="container-fluid px-3 px-md-4 pb-5">
+                <div class="card-custom overflow-hidden bg-white shadow-sm border">
+                    <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold m-0" style="color: var(--brand-teal);"><i class="bi bi-calendar-check me-2"></i>รายการสรุปรายวัน</h6>
+                        <button class="btn btn-sm btn-light border shadow-sm text-secondary" onclick="loadFinancialData()"><i class="bi bi-arrow-clockwise"></i> รีเฟรช</button>
+                    </div>
+                    <div class="card-body p-0 mt-2">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">วันที่</th>
+                                        <th class="text-center text-primary">รับของเข้า</th>
+                                        <th class="text-end">ยอดขายรวม</th>
+                                        <th class="text-end">กำไรสุทธิ</th>
+                                        <th class="text-center pe-4">รายละเอียด</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="finance-table-body">
+                                    <tr><td colspan="5" class="text-center text-muted py-5"><div class="spinner-border spinner-border-sm text-primary me-2"></div>กำลังโหลดข้อมูล...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🟢 Modal แสดงรายละเอียดรายวัน -->
+    <div class="modal fade" id="dailyDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0" style="background-color: var(--primary-light);">
+                    <h5 class="modal-title fw-bold" style="color: var(--brand-teal);" id="modal-date-title"><i class="bi bi-receipt me-2"></i>รายละเอียดประจำวัน</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th class="ps-4">เวลา</th>
+                                    <th>ประเภท</th>
+                                    <th>รายการสินค้า / หมายเหตุ</th>
+                                    <th class="text-center">จำนวน</th>
+                                    <th class="text-end">ยอดเงิน</th>
+                                    <th class="text-end pe-4">กำไร</th>
+                                </tr>
+                            </thead>
+                            <tbody id="daily-detail-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
+        let globalReportData = []; // เก็บข้อมูลที่โหลดมา
+
+        function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
+
+        window.onload = function() {
+            if (!localStorage.getItem('inventory_user')) window.location.href = "index.html";
+            loadFinancialData();
+        }
+
+        async function loadFinancialData() {
+            document.getElementById('finance-table-body').innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5"><div class="spinner-border spinner-border-sm text-primary me-2"></div>กำลังโหลดข้อมูล...</td></tr>';
+            try {
+                let res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "getFinancialReport" }) });
+                let result = await res.json();
+                
+                if (result.success) {
+                    globalReportData = result.data;
+                    renderTable();
+                }
+            } catch (e) {
+                document.getElementById('finance-table-body').innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
+            }
+        }
+
+        function renderTable() {
+            let html = '';
+            if (globalReportData.length === 0) {
+                html = '<tr><td colspan="5" class="text-center text-muted py-5">ไม่มีประวัติรายการใน 3 เดือนที่ผ่านมา</td></tr>';
+            } else {
+                globalReportData.forEach((day, index) => {
+                    html += `<tr>
+                        <td class="ps-4 fw-bold text-dark"><i class="bi bi-calendar me-2 text-muted"></i>${day.displayDate}</td>
+                        <td class="text-center fw-bold text-primary">${day.totalIn > 0 ? day.totalIn + ' ชิ้น' : '-'}</td>
+                        <td class="text-end fw-bold" style="color: var(--brand-teal);">฿${day.totalSales.toLocaleString()}</td>
+                        <td class="text-end fw-bold" style="color: var(--brand-pink);">฿${day.totalProfit.toLocaleString()}</td>
+                        <td class="text-center pe-4">
+                            <button class="btn btn-sm rounded-pill px-3 fw-bold" style="background-color: var(--danger-light); color: var(--brand-pink);" onclick="openDetailModal(${index})">
+                                <i class="bi bi-search me-1"></i>ดูรายละเอียด
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+            }
+            document.getElementById('finance-table-body').innerHTML = html;
+        }
+
+        function openDetailModal(index) {
+            let dayData = globalReportData[index];
+            document.getElementById('modal-date-title').innerHTML = `<i class="bi bi-receipt me-2"></i>รายละเอียดวันที่ ${dayData.displayDate}`;
+            
+            let html = '';
+            if(dayData.details.length === 0) {
+                html = '<tr><td colspan="6" class="text-center py-4">ไม่มีข้อมูล</td></tr>';
+            } else {
+                dayData.details.forEach(item => {
+                    let typeBadge = item.isProfit ? `<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">ขายออก</span>` 
+                                                  : `<span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">รับเข้า</span>`;
+                    let remarkTxt = item.remark ? `<div class="small text-muted mt-1"><i class="bi bi-info-circle me-1"></i>${item.remark}</div>` : '';
+                    
+                    html += `<tr>
+                        <td class="ps-4 text-secondary">${item.time}</td>
+                        <td>${typeBadge}</td>
+                        <td>
+                            <div class="fw-bold text-dark">${item.name}</div>
+                            ${remarkTxt}
+                        </td>
+                        <td class="text-center fw-bold">${item.qty}</td>
+                        <td class="text-end fw-bold ${item.isProfit ? 'text-dark' : 'text-muted'}">${item.amount > 0 ? '฿' + item.amount.toLocaleString() : '-'}</td>
+                        <td class="text-end pe-4 fw-bold ${item.profit > 0 ? 'text-success' : 'text-muted'}">${item.profit > 0 ? '+฿' + item.profit.toLocaleString() : '-'}</td>
+                    </tr>`;
+                });
+            }
+            
+            document.getElementById('daily-detail-body').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('dailyDetailModal')).show();
+        }
+
+        function logout() { localStorage.removeItem('inventory_user'); window.location.href = "index.html"; }
+    </script>
+</body>
+</html>
