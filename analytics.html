@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>วิเคราะห์ยอดขาย | Bemind POS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <div id="mobile-overlay" onclick="toggleMenu()"></div>
+        
+        <!-- เมนูด้านซ้าย -->
+        <div id="sidebar-wrapper">
+            <div class="sidebar-heading text-center py-4 fs-5 fw-bold border-bottom mb-2 d-flex align-items-center justify-content-center">
+                <img src="logo.jpg" alt="Bemind Logo" style="width: 42px; height: 42px; border-radius: 10px; object-fit: cover;" class="me-2 shadow-sm">
+                <span style="color: var(--brand-teal); font-weight: 800; letter-spacing: 0.5px;">Bemind POS</span>
+            </div>
+            
+            <div class="list-group list-group-flush">
+                <a href="#dashboardSubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center active fw-bold">
+                    <span><i class="bi bi-speedometer2 me-2"></i> ภาพรวมระบบ</span><i class="bi bi-chevron-down small"></i>
+                </a>
+                <div class="collapse show" id="dashboardSubmenu">
+                    <a href="dashboard.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-house-door me-2"></i> แดชบอร์ดหลัก</a>
+                    <!-- 🟢 เพิ่มเมนูหน้านี้เข้าไปใน Sidebar ให้กดเข้าได้ -->
+                    <a href="analytics.html" class="list-group-item list-group-item-action ps-5 fw-bold" style="color: var(--brand-teal);"><i class="bi bi-pie-chart me-2"></i> วิเคราะห์ยอดขาย (SKU/ช่องทาง)</a>
+                    <a href="finance.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-journal-text me-2"></i> สรุปรับ-จ่าย (ย้อนหลัง)</a>
+                </div>
+
+                <a href="#inventorySubmenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-box-seam me-2"></i> จัดการสต๊อก</span><i class="bi bi-chevron-down small"></i>
+                </a>
+                <div class="collapse" id="inventorySubmenu">
+                    <a href="receive.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-box-arrow-in-down me-2"></i> รับเข้า (IN)</a>
+                    <a href="issue.html" class="list-group-item list-group-item-action ps-5"><i class="bi bi-cart3 me-2"></i> จุดขายสินค้า (POS)</a>
+                </div>
+                
+                <a href="shipping.html" class="list-group-item list-group-item-action"><i class="bi bi-truck me-2"></i> จัดการขนส่ง</a>
+                <a href="manage.html" class="list-group-item list-group-item-action"><i class="bi bi-gear me-2"></i> จัดการสินค้า</a>
+                <a href="#" onclick="logout()" class="list-group-item list-group-item-action text-danger mt-4"><i class="bi bi-box-arrow-left me-2"></i> ออกจากระบบ</a>
+            </div>
+        </div>
+
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-light py-3 px-4 mb-4 border-bottom bg-white sticky-top">
+                <div class="d-flex align-items-center w-100">
+                    <button class="btn btn-light d-md-none me-3 rounded-circle border-0" onclick="toggleMenu()"><i class="bi bi-list fs-4"></i></button>
+                    <h5 class="m-0 fw-bold text-secondary">เจาะลึกยอดขายรายชิ้น / ช่องทาง</h5>
+                </div>
+            </nav>
+
+            <div class="container-fluid px-3 px-md-4 pb-5">
+                
+                <div class="row g-4 mb-4">
+                    <!-- กราฟแท่งแสดงยอดขายตามช่องทาง -->
+                    <div class="col-xl-6">
+                        <div class="card-custom p-4 h-100 bg-white shadow-sm border">
+                            <h6 class="fw-bold text-secondary mb-4"><i class="bi bi-shop me-2" style="color: var(--brand-pink);"></i>ยอดขายรวมแยกตามช่องทาง (All-Time)</h6>
+                            <div style="height: 250px; width: 100%;">
+                                <canvas id="channelBarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- กราฟแท่งแสดงสินค้า Top 5 ที่ทำเงินสูงสุด -->
+                    <div class="col-xl-6">
+                        <div class="card-custom p-4 h-100 bg-white shadow-sm border">
+                            <h6 class="fw-bold text-secondary mb-4"><i class="bi bi-star-fill me-2" style="color: var(--brand-teal);"></i>Top 5 สินค้าที่ทำรายได้สูงสุด (All-Time)</h6>
+                            <div style="height: 250px; width: 100%;">
+                                <canvas id="productBarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- ตารางจัดอันดับ SKU -->
+                    <div class="col-xl-6">
+                        <div class="card-custom overflow-hidden bg-white shadow-sm border h-100">
+                            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                                <h6 class="fw-bold text-secondary m-0"><i class="bi bi-box-seam me-2 text-info"></i>จัดอันดับยอดขายรายชิ้น (SKU)</h6>
+                            </div>
+                            <div class="card-body p-0 mt-2">
+                                <div class="table-responsive" style="max-height: 450px; overflow-y: auto;">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light sticky-top">
+                                            <tr>
+                                                <th class="ps-4 text-center">อันดับ</th>
+                                                <th>รายการสินค้า</th>
+                                                <th class="text-center">จำนวนที่ขายได้</th>
+                                                <th class="text-end pe-4">ยอดเงิน (บาท)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="sku-table-body">
+                                            <tr><td colspan="4" class="text-center text-muted py-5"><div class="spinner-border spinner-border-sm text-primary me-2"></div>กำลังโหลดข้อมูล...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ตารางจัดอันดับช่องทาง -->
+                    <div class="col-xl-6">
+                        <div class="card-custom overflow-hidden bg-white shadow-sm border h-100">
+                            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                                <h6 class="fw-bold text-secondary m-0"><i class="bi bi-diagram-3 me-2" style="color: var(--brand-pink);"></i>จัดอันดับยอดขายตามช่องทาง</h6>
+                            </div>
+                            <div class="card-body p-0 mt-2">
+                                <div class="table-responsive" style="max-height: 450px; overflow-y: auto;">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light sticky-top">
+                                            <tr>
+                                                <th class="ps-4 text-center">อันดับ</th>
+                                                <th>ชื่อช่องทางขาย</th>
+                                                <th class="text-end pe-4">ยอดเงิน (บาท)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="channel-table-body">
+                                            <tr><td colspan="3" class="text-center text-muted py-5"><div class="spinner-border spinner-border-sm text-primary me-2"></div>กำลังโหลดข้อมูล...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbxtliSnpuO8Dzm32J9pVNMxDO0KxtaybtJtYjQuIuikBY3Grz2JNCTQA1L-XIRiTiyX/exec"; 
+
+        function toggleMenu() { document.getElementById("wrapper").classList.toggle("toggled"); }
+
+        window.onload = async function() {
+            if (!localStorage.getItem('inventory_user')) { window.location.href = "index.html"; return; }
+
+            try {
+                const response = await fetch(API_URL, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'text/plain' }, 
+                    body: JSON.stringify({ action: "getDashboard" }) 
+                });
+                const data = await response.json();
+                
+                renderSKUAnalytics(data);
+                renderChannelAnalytics(data);
+
+            } catch (error) { 
+                console.error("Error loading analytics:", error);
+            }
+        }
+
+        function renderSKUAnalytics(data) {
+            // เตรียมข้อมูลสินค้า: รวมจำนวนชิ้น(productChartData) และ ยอดเงิน(allTimeProductSales)
+            let productsList = [];
+            for (let pName in data.productChartData) {
+                productsList.push({
+                    name: pName,
+                    qty: data.productChartData[pName],
+                    amount: data.allTimeProductSales[pName] || 0
+                });
+            }
+
+            // เรียงลำดับจากยอดเงินที่ขายได้มากสุดไปน้อยสุด
+            productsList.sort((a, b) => b.amount - a.amount);
+
+            // 1. วาดตาราง
+            let html = '';
+            if (productsList.length === 0) {
+                html = '<tr><td colspan="4" class="text-center text-muted py-5">ยังไม่มีประวัติการขายสินค้า</td></tr>';
+            } else {
+                productsList.forEach((item, index) => {
+                    let rankBadge = index === 0 ? '<span class="badge bg-warning text-dark px-2 rounded-pill"><i class="bi bi-trophy-fill"></i> 1</span>' :
+                                    index === 1 ? '<span class="badge bg-secondary px-2 rounded-pill">2</span>' :
+                                    index === 2 ? '<span class="badge px-2 rounded-pill" style="background-color: #cd7f32;">3</span>' :
+                                    `<span class="text-muted fw-bold">${index + 1}</span>`;
+
+                    html += `<tr>
+                        <td class="ps-4 text-center">${rankBadge}</td>
+                        <td class="fw-bold text-dark">${item.name}</td>
+                        <td class="text-center"><span class="badge bg-light text-primary border">${item.qty.toLocaleString()} ชิ้น</span></td>
+                        <td class="text-end pe-4 fw-bold" style="color: var(--brand-teal);">฿${item.amount.toLocaleString()}</td>
+                    </tr>`;
+                });
+            }
+            document.getElementById('sku-table-body').innerHTML = html;
+
+            // 2. วาดกราฟแท่ง (เอาแค่ Top 5 ที่ทำเงินสูงสุด)
+            let top5Products = productsList.slice(0, 5);
+            let pLabels = top5Products.map(p => p.name);
+            let pValues = top5Products.map(p => p.amount);
+
+            new Chart(document.getElementById('productBarChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: pLabels,
+                    datasets: [{
+                        label: 'ยอดขาย (บาท)',
+                        data: pValues,
+                        backgroundColor: 'rgba(20, 158, 154, 0.7)',
+                        borderColor: '#149E9A',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, grid: { borderDash: [5, 5] } }, x: { grid: { display: false } } }
+                }
+            });
+        }
+
+        function renderChannelAnalytics(data) {
+            let channelsList = [];
+            for (let ch in data.allTimeChannelSales) {
+                channelsList.push({
+                    name: ch,
+                    amount: data.allTimeChannelSales[ch] || 0
+                });
+            }
+
+            // เรียงลำดับช่องทางที่ทำเงินมากสุด
+            channelsList.sort((a, b) => b.amount - a.amount);
+
+            // 1. วาดตาราง
+            let html = '';
+            if (channelsList.length === 0) {
+                html = '<tr><td colspan="3" class="text-center text-muted py-5">ยังไม่มีประวัติการขาย</td></tr>';
+            } else {
+                channelsList.forEach((item, index) => {
+                    let rankBadge = index === 0 ? '<span class="badge px-2 rounded-pill" style="background-color: var(--brand-pink);"><i class="bi bi-star-fill"></i> 1</span>' :
+                                    index === 1 ? '<span class="badge bg-secondary px-2 rounded-pill">2</span>' :
+                                    index === 2 ? '<span class="badge px-2 rounded-pill" style="background-color: #cd7f32;">3</span>' :
+                                    `<span class="text-muted fw-bold">${index + 1}</span>`;
+
+                    html += `<tr>
+                        <td class="ps-4 text-center">${rankBadge}</td>
+                        <td class="fw-bold text-dark">${item.name}</td>
+                        <td class="text-end pe-4 fw-bold" style="color: var(--brand-pink);">฿${item.amount.toLocaleString()}</td>
+                    </tr>`;
+                });
+            }
+            document.getElementById('channel-table-body').innerHTML = html;
+
+            // 2. วาดกราฟแท่งแนวนอน (Horizontal Bar)
+            let topChannels = channelsList.slice(0, 7); // เอามาโชว์ 7 อันดับแรก
+            let cLabels = topChannels.map(c => c.name);
+            let cValues = topChannels.map(c => c.amount);
+
+            new Chart(document.getElementById('channelBarChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: cLabels,
+                    datasets: [{
+                        label: 'ยอดขาย (บาท)',
+                        data: cValues,
+                        backgroundColor: 'rgba(250, 107, 186, 0.7)',
+                        borderColor: '#FA6BBA',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // ทำให้เป็นกราฟแท่งแนวนอน จะได้อ่านชื่อช่องทางง่ายๆ
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true, grid: { borderDash: [5, 5] } }, y: { grid: { display: false } } }
+                }
+            });
+        }
+
+        function logout() { localStorage.removeItem('inventory_user'); window.location.href = "index.html"; }
+    </script>
+</body>
+</html>
